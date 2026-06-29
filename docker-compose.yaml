@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    hostname: 'javachat'
+    volumes:
+      - '.:/var/www/javachat'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - 'db'
+    networks:
+      - 'chat'
+
+  db:
+    image: 'postgres:18.3'
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: 'password'
+    networks:
+      - 'chat'
+
+networks:
+  chat:
+    driver: 'bridge'
