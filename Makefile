@@ -1,5 +1,5 @@
 s=app
-u=www-data
+u=ubuntu
 
 .PHONY: bash
 bash: 

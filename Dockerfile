@@ -1,13 +1,24 @@
-FROM eclipse-temurin:26-jdk AS build
-WORKDIR /var/www/javachat
-COPY apps/backend .
-RUN ./gradlew build -x test --no-daemon
+FROM eclipse-temurin:26-jdk
 
-FROM eclipse-temurin:26-jre
-RUN mkdir -p /var/www/javachat && chown -R www-data:www-data /var/www/javachat
-WORKDIR /var/www/javachat
-COPY --from=build --chown=www-data:www-data /var/www/javachat/build/libs/*.jar app.jar
-USER www-data
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        git \
+        curl \
+        vim \
+        htop \
+        sudo \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN echo ubuntu ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/ubuntu \
+    && chmod 0440 /etc/sudoers.d/ubuntu
+
+RUN mkdir -p /var/www/javachat && chown -R ubuntu:ubuntu /var/www
+
+WORKDIR /var/www/javachat/apps/backend
+
+USER ubuntu
+
 EXPOSE 8080
 
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+CMD ["sleep", "infinity"]
