@@ -18,6 +18,6 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public Set<User> get(GetUsersDto dto) {
-        return userRepository.getByUserName(dto.getInput());
+        return userRepository.getByUserName(dto.getInput(), false);
     }
 }

@@ -1,4 +1,4 @@
-package org.backend.config;
+package org.backend.config.db;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -7,6 +7,7 @@ import org.backend.room.data.RoomEntity;
 import org.backend.user.data.UserEntity;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -17,9 +18,11 @@ import java.util.UUID;
 public class DataSeeder implements CommandLineRunner {
 
     private final EntityManager entityManager;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataSeeder(EntityManager entityManager) {
+    public DataSeeder(EntityManager entityManager, PasswordEncoder passwordEncoder) {
         this.entityManager = entityManager;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -50,6 +53,7 @@ public class DataSeeder implements CommandLineRunner {
         var user = new UserEntity();
         user.setId(UUID.fromString(id));
         user.setUsername(username);
+        user.setPassword(passwordEncoder.encode("password"));
         user.setConnected(connected);
         user.setLastConnection(lastConnection);
         entityManager.persist(user);

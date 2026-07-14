@@ -4,7 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.backend.user.domain.AuthUser;
 import org.backend.user.domain.User;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
@@ -22,8 +24,11 @@ public class UserEntity {
     @Column(name = "connected", nullable = false)
     private Boolean connected = false;
 
-    @Column(name = "last_connection", nullable = true)
+    @Column(name = "last_connection")
     private @Nullable LocalDateTime lastConnection;
+
+    @Column(name = "password", nullable = false)
+    private String password;
 
     public UUID getId() {
         return id;
@@ -33,7 +38,7 @@ public class UserEntity {
         this.id = id;
     }
 
-    public String getUsername() {
+    public @NonNull String getUsername() {
         return username;
     }
 
@@ -55,6 +60,14 @@ public class UserEntity {
 
     public void setLastConnection(@Nullable LocalDateTime lastConnection) {
         this.lastConnection = lastConnection;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public User map() {

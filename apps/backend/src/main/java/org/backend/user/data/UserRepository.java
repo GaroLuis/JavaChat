@@ -1,6 +1,7 @@
 package org.backend.user.data;
 
 import jakarta.persistence.EntityManager;
+import org.backend.user.domain.AuthUser;
 import org.backend.user.domain.User;
 import org.backend.user.domain.UserRepositoryInterface;
 import org.jspecify.annotations.Nullable;
@@ -20,12 +21,12 @@ public class UserRepository implements UserRepositoryInterface {
     }
 
     @Override
-    public Set<User> getByUserName(String username) {
+    public Set<User> getByUserName(String username, boolean exact) {
         var query = entityManager.createQuery(
                 "SELECT u FROM UserEntity u WHERE LOWER(u.username) LIKE LOWER(:username)", UserEntity.class
         );
 
-        query.setParameter("username", "%" + username + "%");
+        query.setParameter("username",  exact ? username : "%" + username + "%");
 
         return query.getResultStream().map(UserEntity::map).collect(Collectors.toSet());
     }
@@ -50,5 +51,20 @@ public class UserRepository implements UserRepositoryInterface {
         }
 
         return entity.map();
+    }
+
+    @Override
+    public @Nullable AuthUser getAuthUser(String username) {
+        var query = entityManager.createQuery(
+                "SELECT u FROM UserEntity u WHERE LOWER(u.username) = LOWER(:username)", UserEntity.class
+        );
+
+        UserEntity entity = query.getSingleResultOrNull();
+
+        if (null == entity) {
+            return null;
+        }
+
+        return new AuthUser(entity.getId(), entity.getUsername(), entity.getPassword());
     }
 }
