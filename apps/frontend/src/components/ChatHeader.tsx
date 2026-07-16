@@ -5,7 +5,7 @@ const ChatHeader = ({name}: Props) => {
       className="flex items-center gap-3 px-6 py-4 border-b border-border bg-bg">
       <div
         className="size-10 rounded-full bg-accent text-white flex items-center justify-center font-semibold shrink-0">
-        {name[0]}
+        {name[0].toUpperCase()}
       </div>
       <div className="flex-1">
         <div className="text-base font-semibold text-text-h">

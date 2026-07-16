@@ -1,4 +1,6 @@
 import {useForm} from "react-hook-form";
+import {useMutation} from "@tanstack/react-query";
+import {login} from "../api/repositories/auth.ts";
 
 const AuthModal = () => {
 
@@ -9,10 +11,17 @@ const AuthModal = () => {
     defaultValues: {username: '', password: ''}
   });
 
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: async () => {location.reload();}
+  })
+
   return (
     <div className="flex-1 flex items-center justify-center bg-bg">
       <form
-        onSubmit={handleSubmit((data) => console.log(data))}
+        onSubmit={handleSubmit((data) => {
+          loginMutation.mutate({username: data.username, password: data.password})
+        })}
         className="bg-bg rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6"
         noValidate
       >

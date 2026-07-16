@@ -1,11 +1,12 @@
 package org.backend.auth.presentation;
 
-import org.backend.auth.application.AuthServiceInterface;
-import org.backend.auth.domain.Session;
+import org.backend.core.auth.application.AuthServiceInterface;
+import org.backend.core.auth.domain.Session;
+import org.backend.core.auth.presentation.AuthController;
+import org.backend.config.security.CookieServiceInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
@@ -25,13 +26,14 @@ class AuthControllerTest {
     @Mock
     private AuthServiceInterface authService;
 
-    @InjectMocks
-    private AuthController authController;
+    @Mock
+    private CookieServiceInterface cookieService;
 
     private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
+        AuthController authController = new AuthController(authService, cookieService, 86400);
         mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
     }
 

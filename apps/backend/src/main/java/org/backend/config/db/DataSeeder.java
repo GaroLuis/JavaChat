@@ -2,9 +2,9 @@ package org.backend.config.db;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.backend.message.data.MessageEntity;
-import org.backend.room.data.RoomEntity;
-import org.backend.user.data.UserEntity;
+import org.backend.core.message.data.MessageEntity;
+import org.backend.core.room.data.RoomEntity;
+import org.backend.core.user.data.UserEntity;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;

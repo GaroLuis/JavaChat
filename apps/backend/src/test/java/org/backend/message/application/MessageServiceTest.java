@@ -1,12 +1,13 @@
 package org.backend.message.application;
 
-import org.backend.message.application.dto.CreateMessageDto;
-import org.backend.message.domain.Message;
-import org.backend.message.domain.MessageRepositoryInterface;
-import org.backend.room.domain.Room;
-import org.backend.room.domain.RoomRepositoryInterface;
-import org.backend.user.domain.User;
-import org.backend.user.domain.UserRepositoryInterface;
+import org.backend.core.message.application.MessageService;
+import org.backend.core.message.application.dto.CreateMessageDto;
+import org.backend.core.message.domain.Message;
+import org.backend.core.message.domain.MessageRepositoryInterface;
+import org.backend.core.room.domain.Room;
+import org.backend.core.room.domain.RoomRepositoryInterface;
+import org.backend.core.user.domain.User;
+import org.backend.core.user.domain.UserRepositoryInterface;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -18,7 +18,7 @@ RUN echo ubuntu ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/ubuntu \
 
 RUN mkdir -p /var/www/javachat && chown -R ubuntu:ubuntu /var/www
 
-WORKDIR /var/www/javachat/apps/backend
+WORKDIR /var/www/javachat/apps
 
 USER ubuntu
 

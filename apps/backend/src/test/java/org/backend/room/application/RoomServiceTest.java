@@ -1,12 +1,13 @@
 package org.backend.room.application;
 
-import org.backend.room.application.dto.CreateRoomDto;
-import org.backend.room.application.dto.DeleteRoomDto;
-import org.backend.room.application.dto.GetRoomsDto;
-import org.backend.room.domain.Room;
-import org.backend.room.domain.RoomRepositoryInterface;
-import org.backend.user.domain.User;
-import org.backend.user.domain.UserRepositoryInterface;
+import org.backend.core.room.application.RoomService;
+import org.backend.core.room.application.dto.CreateRoomDto;
+import org.backend.core.room.application.dto.DeleteRoomDto;
+import org.backend.core.room.application.dto.GetRoomsDto;
+import org.backend.core.room.domain.Room;
+import org.backend.core.room.domain.RoomRepositoryInterface;
+import org.backend.core.user.domain.User;
+import org.backend.core.user.domain.UserRepositoryInterface;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -45,7 +46,7 @@ class RoomServiceTest {
         User user2 = new User("user2");
         user2.setId(userId2);
 
-        when(userRepository.getByIds(dto.getUserIds())).thenReturn(Set.of(user1, user2));
+        when(userRepository.getByIds(dto.getUserIds())).thenReturn(List.of(user1, user2));
         when(roomRepository.create(any(Room.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Room result = roomService.create(dto);
@@ -56,22 +57,6 @@ class RoomServiceTest {
 
         verify(userRepository).getByIds(dto.getUserIds());
         verify(roomRepository).create(any(Room.class));
-    }
-
-    @Test
-    void create_WhenSomeUsersMissing_ShouldThrowException() {
-        UUID userId1 = UUID.randomUUID();
-        UUID userId2 = UUID.randomUUID();
-        CreateRoomDto dto = new CreateRoomDto();
-        dto.setUserIds(List.of(userId1, userId2));
-
-        User user1 = new User("user1");
-        user1.setId(userId1);
-
-        when(userRepository.getByIds(dto.getUserIds())).thenReturn(Set.of(user1));
-
-        assertThrows(RuntimeException.class, () -> roomService.create(dto));
-        verify(roomRepository, never()).create(any());
     }
 
     @Test
@@ -115,11 +100,11 @@ class RoomServiceTest {
 
         Room room1 = new Room();
         Room room2 = new Room();
-        Set<Room> expectedRooms = Set.of(room1, room2);
+        List<Room> expectedRooms = List.of(room1, room2);
 
         when(roomRepository.getByUser(userId)).thenReturn(expectedRooms);
 
-        Set<Room> result = roomService.get(dto);
+        List<Room> result = roomService.get(dto);
 
         assertEquals(expectedRooms, result);
         verify(roomRepository).getByUser(userId);

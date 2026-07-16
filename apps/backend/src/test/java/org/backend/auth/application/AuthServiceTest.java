@@ -1,10 +1,12 @@
 package org.backend.auth.application;
 
-import org.backend.auth.application.dto.LoginDto;
-import org.backend.auth.domain.Session;
+import org.backend.core.auth.application.AuthService;
+import org.backend.core.auth.application.dto.LoginDto;
+import org.backend.core.auth.domain.Session;
 import org.backend.config.security.JwtService;
-import org.backend.user.domain.AuthUser;
-import org.backend.user.domain.UserRepositoryInterface;
+import org.backend.core.common.domain.exception.InvalidCredentialsException;
+import org.backend.core.user.domain.AuthUser;
+import org.backend.core.user.domain.UserRepositoryInterface;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -77,8 +79,8 @@ class AuthServiceTest {
         when(userRepository.getAuthUser(username)).thenReturn(authUser);
         when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(false);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(dto));
-        assertEquals("Invalid username or password", exception.getMessage());
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.login(dto));
+        assertEquals("Invalid credentials", exception.getMessage());
 
         verify(jwtService, never()).generateToken(any(), any());
     }
@@ -93,8 +95,8 @@ class AuthServiceTest {
 
         when(userRepository.getAuthUser(username)).thenReturn(null);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(dto));
-        assertEquals("Invalid username or password", exception.getMessage());
+        InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.login(dto));
+        assertEquals("Invalid credentials", exception.getMessage());
 
         verify(passwordEncoder, never()).matches(any(), any());
         verify(jwtService, never()).generateToken(any(), any());

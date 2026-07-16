@@ -1,9 +1,10 @@
 package org.backend.room.presentation;
 
 import org.backend.config.security.SessionUser;
-import org.backend.room.application.RoomServiceInterface;
-import org.backend.room.application.dto.CreateRoomDto;
-import org.backend.room.domain.Room;
+import org.backend.core.room.application.RoomServiceInterface;
+import org.backend.core.room.application.dto.CreateRoomDto;
+import org.backend.core.room.domain.Room;
+import org.backend.core.room.presentation.RoomController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,7 +85,7 @@ class RoomControllerTest {
     void get_ShouldReturnRooms() throws Exception {
         Room room1 = new Room();
         Room room2 = new Room();
-        when(roomService.get(any())).thenReturn(Set.of(room1, room2));
+        when(roomService.get(any())).thenReturn(List.of(room1, room2));
 
         mockMvc.perform(get("/rooms"))
                 .andExpect(status().isOk());

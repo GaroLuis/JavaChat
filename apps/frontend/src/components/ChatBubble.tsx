@@ -1,4 +1,8 @@
-import type {Message, User} from "../App.tsx";
+
+import type {User} from "../api/types/User.ts";
+import type {Message} from "../api/types/Message.ts";
+import {formatTimestamp} from "../utils/helpers.ts";
+
 
 const ChatBubble = ({message, user}: Props) => {
 
@@ -8,7 +12,7 @@ const ChatBubble = ({message, user}: Props) => {
     >
       <div className="wrap-break-word">{message.content}</div>
       <div className="text-[11px] opacity-70 mt-1 text-right">
-        {message.timestamp}
+        {formatTimestamp(message.timestamp)}
       </div>
     </div>
   )

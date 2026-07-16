@@ -1,15 +1,17 @@
 package org.backend.user.application;
 
-import org.backend.user.application.dto.GetUsersDto;
-import org.backend.user.domain.User;
-import org.backend.user.domain.UserRepositoryInterface;
+import org.backend.core.user.application.UserService;
+import org.backend.core.user.application.dto.GetUsersDto;
+import org.backend.core.user.domain.User;
+import org.backend.core.user.domain.UserRepositoryInterface;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Set;
+import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,18 +28,20 @@ class UserServiceTest {
     @Test
     void get_ShouldReturnUsersMatchingInput() {
         String input = "john";
+        UUID userId = UUID.randomUUID();
         GetUsersDto dto = new GetUsersDto();
         dto.setInput(input);
+        dto.setUserID(userId);
 
         User user1 = new User("john_doe");
         User user2 = new User("johnny");
-        Set<User> expectedUsers = Set.of(user1, user2);
+        List<User> expectedUsers = List.of(user1, user2);
 
-        when(userRepository.getByUserName(input, false)).thenReturn(expectedUsers);
+        when(userRepository.getByUserName(input, false, List.of(userId))).thenReturn(expectedUsers);
 
-        Set<User> result = userService.get(dto);
+        List<User> result = userService.getUsers(dto);
 
         assertEquals(expectedUsers, result);
-        verify(userRepository).getByUserName(input, false);
+        verify(userRepository).getByUserName(input, false, List.of(userId));
     }
 }

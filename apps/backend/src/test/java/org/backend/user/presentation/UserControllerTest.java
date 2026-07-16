@@ -1,9 +1,10 @@
 package org.backend.user.presentation;
 
 import org.backend.config.security.SessionUser;
-import org.backend.user.application.UserServiceInterface;
-import org.backend.user.application.dto.GetUsersDto;
-import org.backend.user.domain.User;
+import org.backend.core.user.application.UserServiceInterface;
+import org.backend.core.user.application.dto.GetUsersDto;
+import org.backend.core.user.domain.User;
+import org.backend.core.user.presentation.UserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -52,7 +54,7 @@ class UserControllerTest {
     void get_WithSearchParam_ShouldReturnUsers() throws Exception {
         User user1 = new User("john_doe");
         User user2 = new User("johnny");
-        when(userService.get(any(GetUsersDto.class))).thenReturn(Set.of(user1, user2));
+        when(userService.getUsers(any(GetUsersDto.class))).thenReturn(List.of(user1, user2));
 
         mockMvc.perform(get("/users").param("s", "john"))
                 .andExpect(status().isOk());
