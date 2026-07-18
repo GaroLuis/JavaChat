@@ -3,7 +3,6 @@ package org.backend.core.room.data;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.backend.core.message.data.MessageEntity;
-import org.backend.core.message.domain.Message;
 import org.backend.core.room.domain.Room;
 import org.backend.core.room.domain.RoomRepositoryInterface;
 import org.backend.core.user.data.UserEntity;
@@ -46,7 +45,6 @@ public class RoomRepository implements RoomRepositoryInterface {
         return room;
     }
 
-    @Transactional
     @Override
     public void delete(Room room) {
         RoomEntity entity = entityManager.find(RoomEntity.class, room.getId());
@@ -55,7 +53,7 @@ public class RoomRepository implements RoomRepositoryInterface {
             return;
         }
 
-        for (MessageEntity message: entity.getMessages()) {
+        for (MessageEntity message : entity.getMessages()) {
             entityManager.remove(message);
         }
 
@@ -65,28 +63,41 @@ public class RoomRepository implements RoomRepositoryInterface {
 
     @Override
     public List<Room> getByUser(UUID userId) {
-        var query = entityManager.createQuery(
-            """
-                SELECT r
-                FROM RoomEntity r
-                JOIN r.users u
-                LEFT JOIN FETCH r.messages
-                WHERE u.id = :userId
-            """, RoomEntity.class
+        var roomsQuery = entityManager.createQuery(
+                """
+                            SELECT r
+                            FROM RoomEntity r
+                            JOIN r.users u
+                            WHERE u.id = :userId
+                        """, RoomEntity.class
+        );
+        roomsQuery.setParameter("userId", userId);
+        var roomEntities = roomsQuery.getResultList();
+
+        List<UUID> roomIds = roomEntities.stream().map(RoomEntity::getId).toList();
+
+        var messagesQuery = entityManager.createQuery(
+                """
+                        SELECT m
+                        FROM MessageEntity m
+                        JOIN m.room room
+                        WHERE room.id IN :roomIds
+                        """, MessageEntity.class
         );
 
-        query.setParameter("userId", userId);
+        messagesQuery.setParameter("roomIds", roomIds);
+        var messageEntities = messagesQuery
+                .getResultStream()
+                .collect(Collectors.groupingBy(m -> m.getRoom().getId()));
 
-        return query.getResultStream().map(r -> {
+        return roomEntities.stream().map(r -> {
             Room room = r.map();
 
-            for (UserEntity u : r.getUsers()) {
-                room.addUser(u.map());
-            }
+            r.getUsers().forEach(u -> room.addUser(u.map()));
 
-            for (MessageEntity messageEntity : r.getMessages()) {
-                room.addMessage(messageEntity.map());
-            }
+            messageEntities
+                    .getOrDefault(r.getId(), List.of())
+                    .forEach(m -> room.addMessage(m.map()));
 
             return room;
         }).collect(Collectors.toList());
@@ -94,34 +105,38 @@ public class RoomRepository implements RoomRepositoryInterface {
 
     @Override
     public @Nullable Room getById(UUID id) {
-        var query = entityManager.createQuery(
+        var roomsQuery = entityManager.createQuery(
                 """
-                    SELECT r
-                    FROM RoomEntity r
-                    JOIN r.users
-                    LEFT JOIN FETCH r.messages
-                    WHERE r.id = :id
-                """,
+                            SELECT r
+                            FROM RoomEntity r
+                            JOIN FETCH r.users
+                            WHERE r.id = :id
+                        """,
                 RoomEntity.class
         );
 
-        query.setParameter("id", id);
-
-        RoomEntity entity = query.getSingleResultOrNull();
+        roomsQuery.setParameter("id", id);
+        RoomEntity entity = roomsQuery.getSingleResultOrNull();
 
         if (null == entity) {
             return null;
         }
 
+        var messagesQuery = entityManager.createQuery(
+                """
+                            SELECT m
+                            FROM MessageEntity m
+                            WHERE m.room = :room
+                        """, MessageEntity.class
+        );
+
+        messagesQuery.setParameter("room", entity);
+        var messageEntities = messagesQuery.getResultList();
+
         Room room = entity.map();
 
-        for (UserEntity userEntity : entity.getUsers()) {
-            room.addUser(userEntity.map());
-        }
-
-        for (MessageEntity messageEntity : entity.getMessages()) {
-            room.addMessage(messageEntity.map());
-        }
+        entity.getUsers().forEach(u -> room.addUser(u.map()));
+        messageEntities.forEach(m -> room.addMessage(m.map()));
 
         return room;
     }

@@ -20,7 +20,7 @@ const ActiveChat = ({room, me}: ActiveChatProps) => {
           </div>
         ))}
       </div>
-      <ChatInput/>
+      <ChatInput roomId={room.id}/>
     </>
   )
 }

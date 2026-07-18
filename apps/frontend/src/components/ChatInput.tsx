@@ -1,17 +1,25 @@
 import {useForm} from "react-hook-form";
+import useWsClient from "../hooks/useWsClient.ts";
 
-const ChatInput = () => {
+const ChatInput = ({roomId}: ChatInputProps) => {
+  const {sendMessage} = useWsClient()
 
   const {
     register,
+    setValue,
     handleSubmit,
-    formState: { isValid },
   } = useForm({
     defaultValues: {input: ''}
   });
 
   return (
-    <form onSubmit={handleSubmit((data) => {console.log(data)})} noValidate>
+    <form
+      onSubmit={handleSubmit((data) => {
+        sendMessage({content: data.input, roomId: roomId})
+        setValue('input', '')
+      })}
+      noValidate
+    >
       <div className="flex gap-2 px-6 py-4 border-t border-white bg-white">
         <input
           {...register("input")}
@@ -21,7 +29,6 @@ const ChatInput = () => {
         />
         <button
           className="px-5 py-2.5 border-none rounded-full bg-accent text-white text-sm font-semibold cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 transition-opacity duration-200"
-          disabled={!isValid}
           type={'submit'}
         >
           Send
@@ -32,3 +39,7 @@ const ChatInput = () => {
 }
 
 export default ChatInput;
+
+interface ChatInputProps {
+  roomId: string
+}
