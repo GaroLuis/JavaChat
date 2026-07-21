@@ -13,7 +13,7 @@ const ActiveChat = ({room, me}: ActiveChatProps) => {
 
   return (
     <>
-      <ChatHeader name={user!.username}/>
+      <ChatHeader user={user!}/>
       <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-2 bg-bg">
         {messages.map((msg) => (
           <div

@@ -1,10 +1,13 @@
 package org.backend.core.user.application;
 
+import org.backend.core.common.domain.exception.NotFoundException;
 import org.backend.core.user.application.dto.GetUsersDto;
+import org.backend.core.user.application.dto.UpdateUserConnectionStatusDto;
 import org.backend.core.user.domain.User;
 import org.backend.core.user.domain.UserRepositoryInterface;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,5 +28,23 @@ public class UserService implements UserServiceInterface {
     @Override
     public User getUser(UUID id) {
         return userRepository.getById(id);
+    }
+
+    @Override
+    public void updateUserConnectionStatus(UpdateUserConnectionStatusDto dto) {
+        User user = userRepository.getById(dto.getUserID());
+
+        if (null == user) {
+            throw new NotFoundException("User not found");
+        }
+
+        user.setConnected(dto.isConnected());
+
+        if (!dto.isConnected()) {
+            user.setLastConnection(LocalDateTime.now());
+        }
+
+        userRepository.updateUser(user);
+
     }
 }

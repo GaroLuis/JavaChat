@@ -38,16 +38,7 @@ public class JwtHandshakeHandler extends DefaultHandshakeHandler {
                         if (jwtService.isTokenValid(token)) {
                             UUID userId = jwtService.getUserIdFromToken(token);
                             String username = jwtService.getUsernameFromToken(token);
-                            var principal = new SessionUser(userId, username);
-                            var auth = new UsernamePasswordAuthenticationToken(
-                                    principal,
-                                    null,
-                                    Collections.emptyList()
-                            );
-
-                            attributes.put("auth", auth);
-
-                            return auth;
+                            return new SessionUser(userId, username);
                         }
                         break;
                     }

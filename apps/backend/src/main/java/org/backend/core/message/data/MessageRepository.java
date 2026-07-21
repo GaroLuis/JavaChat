@@ -48,15 +48,12 @@ public class MessageRepository implements MessageRepositoryInterface {
                             FROM MessageEntity m
                             JOIN m.room r
                             WHERE r.id = :roomId
+                            ORDER BY m.timestamp
                         """, MessageEntity.class
         );
         messageQuery.setParameter("roomId", room.getId());
         var messageEntities = messageQuery.getResultStream();
 
-        return messageEntities.map(m -> {
-            Message message = m.map();
-
-            return message;
-        }).collect(Collectors.toList());
+        return messageEntities.map(MessageEntity::map).collect(Collectors.toList());
     }
 }

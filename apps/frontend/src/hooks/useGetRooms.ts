@@ -5,6 +5,7 @@ import {getRooms} from "../api/repositories/rooms.ts";
 export const useGetRooms = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.ROOMS],
-    queryFn: getRooms
+    queryFn: getRooms,
+    staleTime: 0
   })
 }

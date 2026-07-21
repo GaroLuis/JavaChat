@@ -2,6 +2,7 @@ package org.backend.core.user.data;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 import org.backend.core.user.domain.AuthUser;
 import org.backend.core.user.domain.User;
 import org.backend.core.user.domain.UserRepositoryInterface;
@@ -79,5 +80,20 @@ public class UserRepository implements UserRepositoryInterface {
         }
 
         return new AuthUser(entity.getId(), entity.getUsername(), entity.getPassword());
+    }
+
+    @Transactional
+    @Override
+    public void updateUser(User user) {
+        UserEntity entity = entityManager.find(UserEntity.class, user.getId());
+
+        if (null == entity) {
+            return;
+        }
+
+        entity.setConnected(user.getConnected());
+        entity.setLastConnection(user.getLastConnection());
+
+        entityManager.flush();
     }
 }
