@@ -5,8 +5,12 @@ import jakarta.transaction.Transactional;
 import org.backend.core.message.domain.Message;
 import org.backend.core.message.domain.MessageRepositoryInterface;
 import org.backend.core.room.data.RoomEntity;
+import org.backend.core.room.domain.Room;
 import org.backend.core.user.data.UserEntity;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class MessageRepository implements MessageRepositoryInterface {
@@ -34,5 +38,25 @@ public class MessageRepository implements MessageRepositoryInterface {
         entityManager.flush();
 
         return message;
+    }
+
+    @Override
+    public List<Message> getByRoom(Room room) {
+        var messageQuery = entityManager.createQuery(
+                """
+                            SELECT m
+                            FROM MessageEntity m
+                            JOIN m.room r
+                            WHERE r.id = :roomId
+                        """, MessageEntity.class
+        );
+        messageQuery.setParameter("roomId", room.getId());
+        var messageEntities = messageQuery.getResultStream();
+
+        return messageEntities.map(m -> {
+            Message message = m.map();
+
+            return message;
+        }).collect(Collectors.toList());
     }
 }

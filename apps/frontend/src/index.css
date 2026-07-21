@@ -31,3 +31,8 @@ body {
   margin: 0;
   overflow: hidden;
 }
+
+@keyframes loading-bar {
+  0% { translate: -100%; }
+  100% { translate: 200%; }
+}

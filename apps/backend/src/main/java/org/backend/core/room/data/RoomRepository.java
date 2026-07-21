@@ -74,30 +74,10 @@ public class RoomRepository implements RoomRepositoryInterface {
         roomsQuery.setParameter("userId", userId);
         var roomEntities = roomsQuery.getResultList();
 
-        List<UUID> roomIds = roomEntities.stream().map(RoomEntity::getId).toList();
-
-        var messagesQuery = entityManager.createQuery(
-                """
-                        SELECT m
-                        FROM MessageEntity m
-                        JOIN m.room room
-                        WHERE room.id IN :roomIds
-                        """, MessageEntity.class
-        );
-
-        messagesQuery.setParameter("roomIds", roomIds);
-        var messageEntities = messagesQuery
-                .getResultStream()
-                .collect(Collectors.groupingBy(m -> m.getRoom().getId()));
-
         return roomEntities.stream().map(r -> {
             Room room = r.map();
 
             r.getUsers().forEach(u -> room.addUser(u.map()));
-
-            messageEntities
-                    .getOrDefault(r.getId(), List.of())
-                    .forEach(m -> room.addMessage(m.map()));
 
             return room;
         }).collect(Collectors.toList());
@@ -122,21 +102,9 @@ public class RoomRepository implements RoomRepositoryInterface {
             return null;
         }
 
-        var messagesQuery = entityManager.createQuery(
-                """
-                            SELECT m
-                            FROM MessageEntity m
-                            WHERE m.room = :room
-                        """, MessageEntity.class
-        );
-
-        messagesQuery.setParameter("room", entity);
-        var messageEntities = messagesQuery.getResultList();
-
         Room room = entity.map();
 
         entity.getUsers().forEach(u -> room.addUser(u.map()));
-        messageEntities.forEach(m -> room.addMessage(m.map()));
 
         return room;
     }

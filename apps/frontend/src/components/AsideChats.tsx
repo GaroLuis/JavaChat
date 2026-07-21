@@ -1,11 +1,13 @@
 import type {Room} from "../api/types/Room.ts";
 import type {User} from "../api/types/User.ts";
-import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import AsyncSelect from "react-select/async";
-import {getRooms, createRoom, deleteRoom} from "../api/repositories/rooms.ts";
+import {createRoom, deleteRoom} from "../api/repositories/rooms.ts";
 import {QUERY_KEYS} from "../api/queryKeys.ts";
 import {getUsers} from "../api/repositories/users.ts";
 import {formatTimestamp} from "../utils/helpers.ts";
+import {useGetRooms} from "../hooks/useGetRooms.ts";
+import {useGetRoomsMessages} from "../hooks/useGetRoomsMessages.ts";
 
 interface UserOption {
   value: string;
@@ -29,12 +31,9 @@ const AsideChats = ({selectedRoom, setSelectedRoom, me}: Props) => {
     },
   })
 
-  const roomsQuery = useQuery({
-    queryKey: [QUERY_KEYS.ROOMS],
-    queryFn: getRooms
-  })
-
+  const roomsQuery = useGetRooms()
   const rooms = roomsQuery.data?.data ?? [];
+  const roomsMessagesQueries = useGetRoomsMessages(rooms)
 
   return (
     <aside className="w-80 border-r border-border flex flex-col bg-bg shrink-0">
@@ -72,9 +71,12 @@ const AsideChats = ({selectedRoom, setSelectedRoom, me}: Props) => {
         />
       </div>
       <nav className="flex-1 overflow-y-auto py-1">
-        {rooms.map((room) => {
+        {rooms.map((room, index) => {
           const user = room.users.find((u) => u.id !== me.id);
-          const lastMessage = room.messages?.length > 0 ? room.messages[room.messages.length - 1] : null;
+          const messagesQuery = roomsMessagesQueries[index]
+
+          const messages = messagesQuery.data?.data ?? []
+          const lastMessage = messages?.length > 0 ? messages[messages.length - 1] : null;
 
           return (
             <div className={'flex relative'} key={room.id}>

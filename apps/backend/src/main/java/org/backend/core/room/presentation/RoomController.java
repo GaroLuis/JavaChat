@@ -40,7 +40,7 @@ public class RoomController {
     }
 
     @GetMapping
-    public List<Room> get(@AuthenticationPrincipal SessionUser principal) {
+    public List<Room> getRooms(@AuthenticationPrincipal SessionUser principal) {
         GetRoomsDto dto = new GetRoomsDto();
         dto.setUserId(principal.id());
 
