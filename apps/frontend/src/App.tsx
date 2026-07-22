@@ -1,10 +1,11 @@
-import {useState} from 'react'
+import {useContext, useState} from 'react'
 import AuthModal from './components/AuthModal.tsx'
 import AsideChats from "./components/AsideChats.tsx";
 import type {Room} from "./api/types/Room.ts";
 import ActiveChat from "./components/ActiveChat.tsx";
 import {useGetMe} from "./hooks/useGetMe.ts";
 import LoadingBar from "./components/LoadingBar.tsx";
+import {WsClientContext} from "./contexts/WsClientProvider.tsx";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
 
 const Content = () => {
   const [selectedRoom, setSelectedRoom] = useState<Room>()
+  const {client} = useContext(WsClientContext)
 
   const meQuery = useGetMe()
   const me = meQuery.data?.data
@@ -26,7 +28,7 @@ const Content = () => {
     )
   }
 
-  if (null == me) {
+  if (null == me || !client?.active) {
     return (
       <AuthModal/>
     )

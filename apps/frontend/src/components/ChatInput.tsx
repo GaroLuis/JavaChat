@@ -1,8 +1,9 @@
 import {useForm} from "react-hook-form";
-import useWsClient from "../hooks/useWsClient.ts";
+import {useContext} from "react";
+import {WsClientContext} from "../contexts/WsClientProvider.tsx";
 
 const ChatInput = ({roomId}: ChatInputProps) => {
-  const {sendMessage} = useWsClient()
+  const {sendMessage} = useContext(WsClientContext)
 
   const {
     register,
