@@ -1,4 +1,3 @@
-import type {Room} from "../api/types/Room.ts";
 import type {User} from "../api/types/User.ts";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import AsyncSelect from "react-select/async";
@@ -14,7 +13,7 @@ interface UserOption {
   label: string;
 }
 
-const AsideChats = ({selectedRoom, setSelectedRoom, me}: Props) => {
+const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
   const queryClient = useQueryClient()
 
   const createRoomMutation = useMutation({
@@ -82,8 +81,8 @@ const AsideChats = ({selectedRoom, setSelectedRoom, me}: Props) => {
             <div className={'flex relative'} key={room.id}>
               <button
                 key={room.id}
-                className={`flex items-center gap-3 w-full px-5 py-3 border-none bg-transparent cursor-pointer text-left text-text hover:bg-code-bg transition-colors duration-150 ${selectedRoom?.id === room.id ? 'bg-accent-bg' : ''}`}
-                onClick={() => setSelectedRoom(room)}
+                className={`flex items-center gap-3 w-full px-5 py-3 border-none bg-transparent cursor-pointer text-left text-text hover:bg-code-bg transition-colors duration-150 ${selectedRoomId === room.id ? 'bg-accent-bg' : ''}`}
+                onClick={() => setSelectedRoomId(room.id)}
               >
                 <div
                   className="size-11 rounded-full bg-accent text-white flex items-center justify-center font-semibold text-base shrink-0">
@@ -124,8 +123,8 @@ const AsideChats = ({selectedRoom, setSelectedRoom, me}: Props) => {
 }
 
 interface Props {
-  selectedRoom?: Room;
-  setSelectedRoom: (room: Room) => void;
+  selectedRoomId?: string;
+  setSelectedRoomId: (roomId: string) => void;
   me: User;
 }
 
