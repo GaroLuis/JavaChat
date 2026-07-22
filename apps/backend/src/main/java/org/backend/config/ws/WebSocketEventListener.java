@@ -4,7 +4,6 @@ import org.backend.config.security.SessionUser;
 import org.backend.core.user.application.UserServiceInterface;
 import org.backend.core.user.application.dto.UpdateUserConnectionStatusDto;
 import org.springframework.context.event.EventListener;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;

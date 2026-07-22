@@ -3,8 +3,9 @@ package org.backend.core.auth.presentation;
 import jakarta.servlet.http.HttpServletResponse;
 import org.backend.core.auth.application.AuthServiceInterface;
 import org.backend.core.auth.application.dto.LoginDto;
-import org.backend.core.auth.domain.Session;
+import org.backend.core.auth.presentation.mapper.SessionResponseDto;
 import org.backend.config.security.CookieServiceInterface;
+import org.backend.core.auth.presentation.mapper.SessionMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,11 +31,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Session login(@RequestBody LoginDto dto, HttpServletResponse response) {
-        Session session = authService.login(dto);
+    public SessionResponseDto login(@RequestBody LoginDto dto, HttpServletResponse response) {
+        SessionResponseDto sessionDto = SessionMapper.toResponseDto(authService.login(dto));
 
-        cookieService.addCookie("session", session.getToken(), maxAge, response);
+        cookieService.addCookie("session", sessionDto.getToken(), maxAge, response);
 
-        return session;
+        return sessionDto;
     }
 }

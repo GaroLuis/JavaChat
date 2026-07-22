@@ -3,7 +3,9 @@ package org.backend.core.message.presentation;
 import org.backend.config.security.SessionUser;
 import org.backend.core.message.application.MessageServiceInterface;
 import org.backend.core.message.application.dto.CreateMessageDto;
+import org.backend.core.message.presentation.mapper.MessageResponseDto;
 import org.backend.core.message.domain.Message;
+import org.backend.core.message.presentation.mapper.MessageMapper;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -25,13 +27,12 @@ public class ChatController {
         dto.setSenderId(principal.id());
 
         Message message = messageService.create(dto);
+        MessageResponseDto messageDto = MessageMapper.toResponseDto(message);
 
-        message.getRoom().getUsers().forEach(user -> {
-            messagingTemplate.convertAndSendToUser(
-                    user.getUsername(),
-                    "/queue/messages",
-                    message
-            );
-        });
+        message.getRoom().getUsers().forEach(user -> messagingTemplate.convertAndSendToUser(
+                user.getUsername(),
+                "/queue/messages",
+                messageDto
+        ));
     }
 }

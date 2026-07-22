@@ -5,7 +5,8 @@ import org.backend.core.room.application.RoomServiceInterface;
 import org.backend.core.room.application.dto.CreateRoomDto;
 import org.backend.core.room.application.dto.DeleteRoomDto;
 import org.backend.core.room.application.dto.GetRoomsDto;
-import org.backend.core.room.domain.Room;
+import org.backend.core.room.presentation.mapper.RoomResponseDto;
+import org.backend.core.room.presentation.mapper.RoomMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -40,10 +41,12 @@ public class RoomController {
     }
 
     @GetMapping
-    public List<Room> getRooms(@AuthenticationPrincipal SessionUser principal) {
+    public List<RoomResponseDto> getRooms(@AuthenticationPrincipal SessionUser principal) {
         GetRoomsDto dto = new GetRoomsDto();
         dto.setUserId(principal.id());
 
-        return roomService.get(dto);
+        return roomService.get(dto).stream()
+                .map(RoomMapper::toResponseDto)
+                .toList();
     }
 }
