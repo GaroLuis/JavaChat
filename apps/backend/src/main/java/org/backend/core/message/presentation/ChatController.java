@@ -4,10 +4,8 @@ import org.backend.config.security.SessionUser;
 import org.backend.core.message.application.MessageServiceInterface;
 import org.backend.core.message.application.dto.CreateMessageDto;
 import org.backend.core.message.domain.Message;
-import org.backend.core.user.domain.User;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -30,7 +28,7 @@ public class ChatController {
 
         message.getRoom().getUsers().forEach(user -> {
             messagingTemplate.convertAndSendToUser(
-                    user.getId().toString(),
+                    user.getUsername(),
                     "/queue/messages",
                     message
             );
