@@ -9,9 +9,9 @@ public class SessionMapper {
 
     public static SessionResponseDto toResponseDto(Session session) {
         SessionResponseDto dto = new SessionResponseDto();
-        dto.setToken(session.getToken());
-        dto.setUserId(session.getUserId());
-        dto.setUsername(session.getUsername());
+        dto.setToken(session.token());
+        dto.setUserId(session.userId());
+        dto.setUsername(session.username());
         return dto;
     }
 }

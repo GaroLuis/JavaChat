@@ -54,6 +54,6 @@ public class MessageRepository implements MessageRepositoryInterface {
         messageQuery.setParameter("roomId", room.getId());
         var messageEntities = messageQuery.getResultStream();
 
-        return messageEntities.map(MessageEntity::map).collect(Collectors.toList());
+        return messageEntities.map(MessageEntity::toDomain).collect(Collectors.toList());
     }
 }

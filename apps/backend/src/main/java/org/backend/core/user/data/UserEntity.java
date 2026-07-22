@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import org.backend.core.user.domain.User;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -14,43 +16,29 @@ import java.util.UUID;
 @Entity
 @Table(name = "users", schema = "chat")
 public class UserEntity {
+    @Setter
+    @Getter
     @Id
     private UUID id;
 
+    @Setter
     @Column(name = "username", nullable = false, length = 100, unique = true)
     private String username;
 
+    @Setter
     @Column(name = "connected", nullable = false)
-    private Boolean connected = false;
+    private boolean connected;
 
     @Column(name = "last_connection")
     private @Nullable LocalDateTime lastConnection;
 
+    @Setter
+    @Getter
     @Column(name = "password", nullable = false)
     private String password;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public @NonNull String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Boolean getConnected() {
-        return connected;
-    }
-
-    public void setConnected(Boolean connected) {
-        this.connected = connected;
     }
 
     public @Nullable LocalDateTime getLastConnection() {
@@ -61,15 +49,7 @@ public class UserEntity {
         this.lastConnection = lastConnection;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public User map() {
+    public User toDomain() {
         User user = new User(this.username);
 
         user.setId(this.id);

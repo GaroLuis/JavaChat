@@ -55,9 +55,9 @@ class AuthServiceTest {
         Session result = authService.login(dto);
 
         assertNotNull(result);
-        assertEquals(token, result.getToken());
-        assertEquals(userId, result.getUserId());
-        assertEquals(username, result.getUsername());
+        assertEquals(token, result.token());
+        assertEquals(userId, result.userId());
+        assertEquals(username, result.username());
 
         verify(userRepository).getAuthUser(username);
         verify(passwordEncoder).matches(rawPassword, encodedPassword);

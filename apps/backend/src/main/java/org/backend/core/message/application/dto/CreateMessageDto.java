@@ -1,35 +1,16 @@
 package org.backend.core.message.application.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.UUID;
 
+@Setter
+@Getter
 public class CreateMessageDto {
     private UUID senderId;
 
     private UUID roomId;
 
     private String content;
-
-    public UUID getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(UUID senderId) {
-        this.senderId = senderId;
-    }
-
-    public UUID getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(UUID roomId) {
-        this.roomId = roomId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 }

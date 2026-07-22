@@ -75,9 +75,9 @@ public class RoomRepository implements RoomRepositoryInterface {
         var roomEntities = roomsQuery.getResultList();
 
         return roomEntities.stream().map(r -> {
-            Room room = r.map();
+            Room room = r.toDomain();
 
-            r.getUsers().forEach(u -> room.addUser(u.map()));
+            r.getUsers().forEach(u -> room.addUser(u.toDomain()));
 
             return room;
         }).collect(Collectors.toList());
@@ -102,9 +102,9 @@ public class RoomRepository implements RoomRepositoryInterface {
             return null;
         }
 
-        Room room = entity.map();
+        Room room = entity.toDomain();
 
-        entity.getUsers().forEach(u -> room.addUser(u.map()));
+        entity.getUsers().forEach(u -> room.addUser(u.toDomain()));
 
         return room;
     }

@@ -39,7 +39,7 @@ public class UserRepository implements UserRepositoryInterface {
 
         return entityManager.createQuery(cq)
                 .getResultStream()
-                .map(UserEntity::map)
+                .map(UserEntity::toDomain)
                 .collect(Collectors.toList());
     }
 
@@ -51,7 +51,7 @@ public class UserRepository implements UserRepositoryInterface {
 
         query.setParameter("userIds", ids);
 
-        return query.getResultStream().map(UserEntity::map).collect(Collectors.toList());
+        return query.getResultStream().map(UserEntity::toDomain).collect(Collectors.toList());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class UserRepository implements UserRepositoryInterface {
             return null;
         }
 
-        return entity.map();
+        return entity.toDomain();
     }
 
     @Override

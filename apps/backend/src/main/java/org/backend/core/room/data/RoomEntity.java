@@ -1,15 +1,19 @@
 package org.backend.core.room.data;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.backend.core.message.data.MessageEntity;
 import org.backend.core.room.domain.Room;
 import org.backend.core.user.data.UserEntity;
 
 import java.util.*;
 
+@Getter
 @Entity
 @Table(name = "rooms", schema = "chat")
 public class RoomEntity {
+    @Setter
     @Id
     private UUID id;
 
@@ -20,32 +24,16 @@ public class RoomEntity {
     @OneToMany(mappedBy = "room")
     private List<MessageEntity> messages;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public RoomEntity() {
         this.users = new ArrayList<>();
         this.messages = new ArrayList<>();
-    }
-
-    public List<UserEntity> getUsers() {
-        return users;
-    }
-
-    public List<MessageEntity> getMessages() {
-        return messages;
     }
 
     public void addUser(UserEntity user) {
         this.users.add(user);
     }
 
-    public Room map() {
+    public Room toDomain() {
         Room room = new Room();
 
         room.setId(this.id);

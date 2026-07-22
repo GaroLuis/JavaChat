@@ -1,14 +1,17 @@
 package org.backend.core.message.data;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.backend.core.message.domain.Message;
 import org.backend.core.room.data.RoomEntity;
-import org.backend.core.room.domain.Room;
 import org.backend.core.user.data.UserEntity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "messages", schema = "chat")
 public class MessageEntity {
@@ -27,48 +30,8 @@ public class MessageEntity {
     @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public UserEntity getSender() {
-        return sender;
-    }
-
-    public void setSender(UserEntity sender) {
-        this.sender = sender;
-    }
-
-    public RoomEntity getRoom() {
-        return room;
-    }
-
-    public void setRoom(RoomEntity room) {
-        this.room = room;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Message map() {
-        Message message = new Message(this.content, this.sender.map(), this.room.map());
+    public Message toDomain() {
+        Message message = new Message(this.content, this.sender.toDomain(), this.room.toDomain());
 
         message.setId(this.id);
         message.setTimestamp(this.timestamp);
