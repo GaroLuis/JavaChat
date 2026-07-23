@@ -1,6 +1,7 @@
 package org.backend.core.auth.presentation;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.backend.core.auth.application.AuthServiceInterface;
 import org.backend.core.auth.application.dto.LoginDto;
 import org.backend.core.auth.presentation.mapper.SessionResponseDto;
@@ -31,7 +32,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public SessionResponseDto login(@RequestBody LoginDto dto, HttpServletResponse response) {
+    public SessionResponseDto login(@Valid @RequestBody LoginDto dto, HttpServletResponse response) {
         SessionResponseDto sessionDto = SessionMapper.toResponseDto(authService.login(dto));
 
         cookieService.addCookie("session", sessionDto.getToken(), maxAge, response);

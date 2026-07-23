@@ -1,6 +1,12 @@
 import {useForm} from "react-hook-form";
 import {useContext} from "react";
 import {WsClientContext} from "../contexts/WsClientProvider.tsx";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
+
+const SCHEMA = yup.object({
+  input: yup.string().required(),
+})
 
 const ChatInput = ({roomId}: ChatInputProps) => {
   const {sendMessage} = useContext(WsClientContext)
@@ -9,8 +15,10 @@ const ChatInput = ({roomId}: ChatInputProps) => {
     register,
     setValue,
     handleSubmit,
+    formState: { isValid },
   } = useForm({
-    defaultValues: {input: ''}
+    defaultValues: {input: ''},
+    resolver: yupResolver(SCHEMA)
   });
 
   return (
@@ -31,6 +39,7 @@ const ChatInput = ({roomId}: ChatInputProps) => {
         <button
           className="px-5 py-2.5 border-none rounded-full bg-accent text-white text-sm font-semibold cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 transition-opacity duration-200"
           type={'submit'}
+          disabled={!isValid}
         >
           Send
         </button>
