@@ -1,9 +1,9 @@
 import {useContext} from 'react'
-import AuthModal from './components/AuthModal.tsx'
+import AuthModal from './components/auth/modals/AuthModal.tsx'
 import {useGetMe} from "./hooks/useGetMe.ts";
-import LoadingBar from "./components/LoadingBar.tsx";
+import LoadingBar from "./components/generic/LoadingBar.tsx";
 import {WsClientContext} from "./contexts/WsClientProvider.tsx";
-import ChatApp from "./components/ChatApp.tsx";
+import ChatApp from "./components/chat/ChatApp.tsx";
 
 function App() {
   return (

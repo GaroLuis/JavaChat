@@ -14,6 +14,7 @@ public class MessageMapper {
         dto.setContent(message.getContent());
         dto.setSender(UserMapper.toResponseDto(message.getSender()));
         dto.setTimestamp(message.getTimestamp());
+        dto.setRoom(message.getRoom());
         return dto;
     }
 }

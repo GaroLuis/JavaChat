@@ -3,6 +3,7 @@ import {Client} from "@stomp/stompjs";
 import {QUERY_KEYS} from "../api/queryKeys.ts";
 import {useQueryClient} from "@tanstack/react-query";
 import {useGetMe} from "../hooks/useGetMe.ts";
+import type {Message} from "../api/types/Message.ts";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const WsClientContext = createContext<WsClientContextType>({
@@ -26,7 +27,29 @@ const WsClientProvider = ({children}: WsClientProviderProps) => {
       reconnectDelay: 5000,
       onConnect: () => {
         stompClient.subscribe(`/user/queue/messages`, (msg) => {
-          queryClient.invalidateQueries({queryKey: [QUERY_KEYS.ROOMS, {id: JSON.parse(msg.body).room.id}]})
+          const message: Message = JSON.parse(msg.body);
+
+          queryClient.setQueryData(
+            [QUERY_KEYS.ROOMS, {id: message.room.id}],
+            (old: InfiniteQueryData | undefined): InfiniteQueryData => {
+              if (!old || old.pages.length === 0) {
+                return {pages: [[message]], pageParams: [undefined]};
+              }
+
+              const firstPage = old.pages[0];
+              const alreadyExists = firstPage.some((m: Message) => m.id === message.id);
+              if (alreadyExists) {
+                return old;
+              }
+
+              return {
+                ...old,
+                pages: [[message, ...firstPage],
+                  ...old.pages.slice(1),
+                ],
+              };
+            }
+          );
         });
       },
     });
@@ -68,4 +91,9 @@ export interface SendMessage {
 interface WsClientContextType {
   sendMessage: (message: SendMessage) => void;
   client: Client | null;
+}
+
+interface InfiniteQueryData {
+  pages: Message[][];
+  pageParams: (string | undefined)[];
 }

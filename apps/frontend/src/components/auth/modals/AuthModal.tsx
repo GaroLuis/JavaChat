@@ -1,6 +1,6 @@
 import {useForm} from "react-hook-form";
 import {useMutation} from "@tanstack/react-query";
-import {login} from "../api/repositories/auth.ts";
+import {login} from "../../../api/repositories/auth.ts";
 
 const AuthModal = () => {
 

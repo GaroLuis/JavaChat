@@ -47,6 +47,6 @@ public class MessageService implements MessageServiceInterface{
             throw new NotFoundException("Room not found");
         }
 
-        return messageRepository.getByRoom(room);
+        return messageRepository.getByRoom(room, dto.getCursor(), dto.getSize());
     }
 }

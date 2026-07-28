@@ -6,6 +6,5 @@ export const useGetRooms = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.ROOMS],
     queryFn: getRooms,
-    refetchInterval: 30000, //30s
   })
 }

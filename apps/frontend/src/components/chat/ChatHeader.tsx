@@ -1,5 +1,5 @@
-import type {User} from "../api/types/User.ts";
-import {formatTimestamp} from "../utils/helpers.ts";
+import type {User} from "../../api/types/User.ts";
+import {formatTimestamp} from "../../utils/helpers.ts";
 
 const ChatHeader = ({user}: Props) => {
 

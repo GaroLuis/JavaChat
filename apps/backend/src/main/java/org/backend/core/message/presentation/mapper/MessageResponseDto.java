@@ -1,6 +1,7 @@
 package org.backend.core.message.presentation.mapper;
 
 import lombok.Data;
+import org.backend.core.room.domain.Room;
 import org.backend.core.user.presentation.mapper.UserResponseDto;
 
 import java.time.LocalDateTime;
@@ -12,4 +13,5 @@ public class MessageResponseDto {
     private String content;
     private UserResponseDto sender;
     private LocalDateTime timestamp;
+    private Room room;
 }

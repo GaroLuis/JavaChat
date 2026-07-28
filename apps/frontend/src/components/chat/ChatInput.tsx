@@ -1,6 +1,6 @@
 import {useForm} from "react-hook-form";
 import {useContext} from "react";
-import {WsClientContext} from "../contexts/WsClientProvider.tsx";
+import {WsClientContext} from "../../contexts/WsClientProvider.tsx";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 

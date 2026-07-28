@@ -1,7 +1,7 @@
 
-import type {User} from "../api/types/User.ts";
-import type {Message} from "../api/types/Message.ts";
-import {formatTimestamp} from "../utils/helpers.ts";
+import type {User} from "../../api/types/User.ts";
+import type {Message} from "../../api/types/Message.ts";
+import {formatTimestamp} from "../../utils/helpers.ts";
 
 const ChatBubble = ({message, user}: Props) => {
 

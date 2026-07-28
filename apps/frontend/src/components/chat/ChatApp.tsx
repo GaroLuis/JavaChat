@@ -1,8 +1,8 @@
-import {useGetRooms} from "../hooks/useGetRooms.ts";
+import {useGetRooms} from "../../hooks/useGetRooms.ts";
 import AsideChats from "./AsideChats.tsx";
 import {useState} from "react";
 import ActiveChat from "./ActiveChat.tsx";
-import type {User} from "../api/types/User.ts";
+import type {User} from "../../api/types/User.ts";
 
 const ChatApp = ({me}: Props) => {
   const [selectedRoomId, setSelectedRoomId] = useState<string>()

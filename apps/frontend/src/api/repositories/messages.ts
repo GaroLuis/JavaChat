@@ -5,6 +5,6 @@ export function sendMessages() {
   return connector.post('/messages')
 }
 
-export function getRoomMessages(roomId: string) {
-  return connector.get<Message[]>(`/rooms/${roomId}/messages`)
+export function getRoomMessages(roomId: string, size: number, cursor?: string) {
+  return connector.get<Message[]>(`/rooms/${roomId}/messages`, {params: {cursor, size}})
 }
