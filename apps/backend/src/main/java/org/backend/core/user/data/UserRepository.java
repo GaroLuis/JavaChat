@@ -3,7 +3,6 @@ package org.backend.core.user.data;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
-import org.backend.core.user.domain.AuthUser;
 import org.backend.core.user.domain.User;
 import org.backend.core.user.domain.UserRepositoryInterface;
 import org.jspecify.annotations.Nullable;
@@ -23,7 +22,7 @@ public class UserRepository implements UserRepositoryInterface {
     }
 
     @Override
-    public List<User> getByUserName(String username, boolean exact, @Nullable List<UUID> exclude) {
+    public List<User> getUsersByUserName(String username, boolean exact, @Nullable List<UUID> exclude) {
         var cb = entityManager.getCriteriaBuilder();
         var cq = cb.createQuery(UserEntity.class);
         var root = cq.from(UserEntity.class);
@@ -66,7 +65,7 @@ public class UserRepository implements UserRepositoryInterface {
     }
 
     @Override
-    public @Nullable AuthUser getAuthUser(String username) {
+    public @Nullable User getByUserName(String username) {
         var query = entityManager.createQuery(
                 "SELECT u FROM UserEntity u WHERE LOWER(u.username) = LOWER(:username)", UserEntity.class
         );
@@ -79,7 +78,7 @@ public class UserRepository implements UserRepositoryInterface {
             return null;
         }
 
-        return new AuthUser(entity.getId(), entity.getUsername(), entity.getPassword());
+        return entity.toDomain();
     }
 
     @Transactional

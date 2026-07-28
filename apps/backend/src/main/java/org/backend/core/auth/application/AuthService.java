@@ -4,7 +4,7 @@ import org.backend.core.auth.application.dto.LoginDto;
 import org.backend.core.auth.domain.Session;
 import org.backend.config.security.JwtServiceInterface;
 import org.backend.core.common.domain.exception.InvalidCredentialsException;
-import org.backend.core.user.domain.AuthUser;
+import org.backend.core.user.domain.User;
 import org.backend.core.user.domain.UserRepositoryInterface;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,13 +26,13 @@ public class AuthService implements AuthServiceInterface {
     }
 
     public Session login(LoginDto dto) {
-        AuthUser user = userRepository.getAuthUser(dto.getUsername());
+        User user = userRepository.getByUserName(dto.getUsername());
 
-        if (user == null || !passwordEncoder.matches(dto.getPassword(), user.password())) {
+        if (user == null || !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new InvalidCredentialsException();
         }
 
-        String token = jwtService.generateToken(user.id(), user.username());
-        return new Session(token, user.id(), user.username());
+        String token = jwtService.generateToken(user.getId(), user.getUsername());
+        return new Session(token, user.getId(), user.getUsername());
     }
 }

@@ -11,9 +11,14 @@ import java.util.UUID;
 @Getter
 public class User {
     private UUID id;
+
     private String username;
+
     private Boolean connected;
+
     private @Nullable LocalDateTime lastConnection;
+
+    private String password;
 
     public User(String username) {
         this.id = UUID.randomUUID();

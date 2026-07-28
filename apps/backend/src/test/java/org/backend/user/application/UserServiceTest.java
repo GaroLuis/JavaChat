@@ -37,11 +37,11 @@ class UserServiceTest {
         User user2 = new User("johnny");
         List<User> expectedUsers = List.of(user1, user2);
 
-        when(userRepository.getByUserName(input, false, List.of(userId))).thenReturn(expectedUsers);
+        when(userRepository.getUsersByUserName(input, false, List.of(userId))).thenReturn(expectedUsers);
 
         List<User> result = userService.getUsers(dto);
 
         assertEquals(expectedUsers, result);
-        verify(userRepository).getByUserName(input, false, List.of(userId));
+        verify(userRepository).getUsersByUserName(input, false, List.of(userId));
     }
 }

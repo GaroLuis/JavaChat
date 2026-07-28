@@ -56,6 +56,7 @@ public class UserEntity {
         user.setUsername(this.username);
         user.setConnected(this.connected);
         user.setLastConnection(this.lastConnection);
+        user.setPassword(this.password);
 
         return user;
     }

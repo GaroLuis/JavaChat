@@ -22,7 +22,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public List<User> getUsers(GetUsersDto dto) {
-        return userRepository.getByUserName(dto.getInput(), false, List.of(dto.getUserID()));
+        return userRepository.getUsersByUserName(dto.getInput(), false, List.of(dto.getUserID()));
     }
 
     @Override

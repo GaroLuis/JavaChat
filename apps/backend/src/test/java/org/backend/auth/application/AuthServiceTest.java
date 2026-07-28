@@ -5,7 +5,7 @@ import org.backend.core.auth.application.dto.LoginDto;
 import org.backend.core.auth.domain.Session;
 import org.backend.config.security.JwtService;
 import org.backend.core.common.domain.exception.InvalidCredentialsException;
-import org.backend.core.user.domain.AuthUser;
+import org.backend.core.user.domain.User;
 import org.backend.core.user.domain.UserRepositoryInterface;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,9 +46,11 @@ class AuthServiceTest {
         dto.setUsername(username);
         dto.setPassword(rawPassword);
 
-        AuthUser authUser = new AuthUser(userId, username, encodedPassword);
+        User user = new User(username);
+        user.setPassword(encodedPassword);
+        user.setId(userId);
 
-        when(userRepository.getAuthUser(username)).thenReturn(authUser);
+        when(userRepository.getByUserName(username)).thenReturn(user);
         when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
         when(jwtService.generateToken(userId, username)).thenReturn(token);
 
@@ -59,7 +61,7 @@ class AuthServiceTest {
         assertEquals(userId, result.userId());
         assertEquals(username, result.username());
 
-        verify(userRepository).getAuthUser(username);
+        verify(userRepository).getByUserName(username);
         verify(passwordEncoder).matches(rawPassword, encodedPassword);
         verify(jwtService).generateToken(userId, username);
     }
@@ -74,9 +76,10 @@ class AuthServiceTest {
         dto.setUsername(username);
         dto.setPassword(rawPassword);
 
-        AuthUser authUser = new AuthUser(UUID.randomUUID(), username, encodedPassword);
+        User user = new User(username);
+        user.setPassword(encodedPassword);
 
-        when(userRepository.getAuthUser(username)).thenReturn(authUser);
+        when(userRepository.getByUserName(username)).thenReturn(user);
         when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(false);
 
         InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.login(dto));
@@ -93,7 +96,7 @@ class AuthServiceTest {
         dto.setUsername(username);
         dto.setPassword("password");
 
-        when(userRepository.getAuthUser(username)).thenReturn(null);
+        when(userRepository.getByUserName(username)).thenReturn(null);
 
         InvalidCredentialsException exception = assertThrows(InvalidCredentialsException.class, () -> authService.login(dto));
         assertEquals("Invalid credentials", exception.getMessage());
