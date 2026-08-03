@@ -5,10 +5,12 @@ import ChatBubble from "./ChatBubble.tsx";
 import ChatInput from "./ChatInput.tsx";
 import type {User} from "../../api/types/User.ts";
 import {useGetRoomMessages} from "../../hooks/useGetRoomMessages.ts";
+import {useTranslation} from "react-i18next";
 
 const ActiveChat = ({room, me}: ActiveChatProps) => {
   const user = room.users.find((u) => u.id !== me.id);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation()
 
   const messagesQuery = useGetRoomMessages(room);
   const messages = messagesQuery.data?.pages.flatMap((page) => page) ?? [];
@@ -41,7 +43,7 @@ const ActiveChat = ({room, me}: ActiveChatProps) => {
       >
         {messagesQuery.hasNextPage && (
           <div className="text-center text-text py-2 text-sm">
-            {messagesQuery.isFetchingNextPage ? "Loading older messages..." : "Scroll up for older messages"}
+            {messagesQuery.isFetchingNextPage ? t('loadingOlderMessages') : t('scrollUpOlderMessages')}
           </div>
         )}
         {messages.toReversed().map((msg) => (

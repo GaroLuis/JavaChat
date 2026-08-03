@@ -1,0 +1,17 @@
+{
+  "chats": "Chats",
+  "searchUsers": "Search users...",
+  "searching": "Searching...",
+  "deleteChat": "Delete chat",
+  "online": "Online",
+  "offline": "Offline",
+  "selectConversation": "Select a conversation to start chatting",
+  "loadingOlderMessages": "Loading older messages...",
+  "scrollUpOlderMessages": "Scroll up for older messages",
+  "typeMessage": "Type a message...",
+  "send": "Send",
+  "signIn": "Sign in",
+  "signInDescription": "This chat is locked. Enter your credentials to continue.",
+  "username": "Username",
+  "password": "Password"
+}

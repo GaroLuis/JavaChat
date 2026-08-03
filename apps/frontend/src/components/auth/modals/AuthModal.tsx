@@ -1,8 +1,10 @@
 import {useForm} from "react-hook-form";
 import {useMutation} from "@tanstack/react-query";
 import {login} from "../../../api/repositories/auth.ts";
+import {useTranslation} from "react-i18next";
 
 const AuthModal = () => {
+  const { t } = useTranslation()
 
   const {
     register,
@@ -29,28 +31,28 @@ const AuthModal = () => {
           className="text-xl font-semibold text-text-h mb-1"
           style={{fontFamily: 'var(--font-heading)'}}
         >
-          Sign in
+          {t('signIn')}
         </h2>
         <p className="text-sm text-text mb-5">
-          This chat is locked. Enter your credentials to continue.
+          {t('signInDescription')}
         </p>
         <input
           {...register("username")}
           type="text"
-          placeholder="Username"
+          placeholder={t('username')}
           className="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-code-bg text-text-h outline-none focus:border-accent placeholder:text-text transition-colors duration-200 mb-3"
         />
         <input
           {...register("password")}
           type="password"
-          placeholder="Password"
+          placeholder={t('password')}
           className="w-full px-4 py-2.5 border border-border rounded-lg text-sm bg-code-bg text-text-h outline-none focus:border-accent placeholder:text-text transition-colors duration-200 mb-3"
         />
         <button
           type="submit"
           className="w-full py-2.5 border-none rounded-lg bg-accent text-white text-sm font-semibold cursor-pointer hover:opacity-90 transition-opacity duration-200"
         >
-          Sign in
+          {t('signIn')}
         </button>
       </form>
     </div>

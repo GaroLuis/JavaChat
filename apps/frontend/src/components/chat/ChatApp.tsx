@@ -3,11 +3,13 @@ import AsideChats from "./AsideChats.tsx";
 import {useState} from "react";
 import ActiveChat from "./ActiveChat.tsx";
 import type {User} from "../../api/types/User.ts";
+import {useTranslation} from "react-i18next";
 
 const ChatApp = ({me}: Props) => {
   const [selectedRoomId, setSelectedRoomId] = useState<string>()
   const roomsQuery = useGetRooms()
   const rooms = roomsQuery.data?.data ?? [];
+  const { t } = useTranslation()
 
   const selectedRoom = rooms.find((room) => room.id === selectedRoomId)
 
@@ -19,7 +21,7 @@ const ChatApp = ({me}: Props) => {
           <ActiveChat room={selectedRoom} me={me}/>
         ) : (
           <div className="flex-1 flex items-center justify-center text-text text-base">
-            <p>Select a conversation to start chatting</p>
+            <p>{t('selectConversation')}</p>
           </div>
         )}
       </main>

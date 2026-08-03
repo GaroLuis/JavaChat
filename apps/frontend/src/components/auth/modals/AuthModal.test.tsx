@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AuthModal from './AuthModal'
+import { AllProviders } from '../../../test/test-utils'
 
 vi.mock('../../../api/repositories/auth', () => ({
   login: vi.fn(),
@@ -23,7 +24,9 @@ const createTestQueryClient = () =>
 const renderWithClient = (ui: React.ReactElement) => {
   const queryClient = createTestQueryClient()
   return render(
-    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>,
+    <QueryClientProvider client={queryClient}>
+      <AllProviders>{ui}</AllProviders>
+    </QueryClientProvider>,
   )
 }
 
@@ -54,7 +57,7 @@ describe('AuthModal', () => {
   })
 
   it('calls login mutation on form submit', async () => {
-    mockedLogin.mockResolvedValueOnce({ data: {} } as any)
+    mockedLogin.mockResolvedValueOnce({ data: {} } as never)
     Object.defineProperty(window, 'location', {
       value: { reload: vi.fn() },
       writable: true,

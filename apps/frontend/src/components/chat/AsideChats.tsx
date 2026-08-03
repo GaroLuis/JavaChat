@@ -6,6 +6,7 @@ import {QUERY_KEYS} from "../../api/queryKeys.ts";
 import {getUsers} from "../../api/repositories/users.ts";
 import {useGetRooms} from "../../hooks/useGetRooms.ts";
 import RoomItem from "./RoomItem.tsx";
+import {useTranslation} from "react-i18next";
 
 interface UserOption {
   value: string;
@@ -14,6 +15,7 @@ interface UserOption {
 
 const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const createRoomMutation = useMutation({
     mutationFn: (userId: string) => createRoom([userId]),
@@ -32,7 +34,7 @@ const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
           className="m-0 text-2xl font-semibold text-text-h"
           style={{fontFamily: 'var(--font-heading)'}}
         >
-          Chats
+          {t('chats')}
         </h1>
       </div>
       <div className="px-5 py-3">
@@ -54,9 +56,9 @@ const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
 
             await createRoomMutation.mutateAsync(option.value)
           }}
-          placeholder="Search users..."
+          placeholder={t('searchUsers')}
           noOptionsMessage={() => null}
-          loadingMessage={() => 'Searching...'}
+          loadingMessage={() => t('searching')}
           value={null}
         />
       </div>

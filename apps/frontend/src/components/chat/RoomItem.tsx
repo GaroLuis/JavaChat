@@ -5,9 +5,11 @@ import type {Props as AsideProps} from "./AsideChats.tsx";
 import type {Room} from "../../api/types/Room.ts";
 import {formatTimestamp} from "../../utils/helpers.ts";
 import {useGetRoomMessages} from "../../hooks/useGetRoomMessages.ts";
+import {useTranslation} from "react-i18next";
 
 const RoomItem = ({room, me, selectedRoomId, setSelectedRoomId}: Props) => {
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const deleteRoomMutation = useMutation({
     mutationFn: (roomId: string) => deleteRoom(roomId),
@@ -52,7 +54,7 @@ const RoomItem = ({room, me, selectedRoomId, setSelectedRoomId}: Props) => {
           deleteRoomMutation.mutate(room.id)
         }}
         className="absolute size-6 flex items-center justify-center rounded hover:bg-red-500/20 text-text hover:text-red-500 transition-colors cursor-pointer border-none bg-transparent shrink-0"
-        title="Delete chat"
+        title={t('deleteChat')}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

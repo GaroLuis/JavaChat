@@ -3,6 +3,7 @@ import {useContext} from "react";
 import {WsClientContext} from "../../contexts/WsClientProvider.tsx";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
+import {useTranslation} from "react-i18next";
 
 const SCHEMA = yup.object({
   input: yup.string().required(),
@@ -10,6 +11,7 @@ const SCHEMA = yup.object({
 
 const ChatInput = ({roomId}: ChatInputProps) => {
   const {sendMessage} = useContext(WsClientContext)
+  const { t } = useTranslation()
 
   const {
     register,
@@ -34,14 +36,14 @@ const ChatInput = ({roomId}: ChatInputProps) => {
           {...register("input")}
           className="flex-1 px-4 py-2.5 border border-border rounded-full text-[15px] bg-code-bg text-text-h outline-none focus:border-accent placeholder:text-text transition-colors duration-200"
           type="text"
-          placeholder="Type a message..."
+          placeholder={t('typeMessage')}
         />
         <button
           className="px-5 py-2.5 border-none rounded-full bg-accent text-white text-sm font-semibold cursor-pointer hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shrink-0 transition-opacity duration-200"
           type={'submit'}
           disabled={!isValid}
         >
-          Send
+          {t('send')}
         </button>
       </div>
     </form>

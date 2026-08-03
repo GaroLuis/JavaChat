@@ -3,12 +3,13 @@ import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import ChatInput from './ChatInput'
 import { WsClientContext } from '../../contexts/WsClientProvider'
+import { AllProviders } from '../../test/test-utils'
 
 const mockSendMessage = vi.fn()
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <WsClientContext.Provider value={{ sendMessage: mockSendMessage, client: null }}>
-    {children}
+    <AllProviders>{children}</AllProviders>
   </WsClientContext.Provider>
 )
 

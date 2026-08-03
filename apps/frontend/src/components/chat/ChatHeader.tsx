@@ -1,7 +1,9 @@
 import type {User} from "../../api/types/User.ts";
 import {formatTimestamp} from "../../utils/helpers.ts";
+import {useTranslation} from "react-i18next";
 
 const ChatHeader = ({user}: Props) => {
+  const { t } = useTranslation()
 
   return (
     <header
@@ -14,10 +16,10 @@ const ChatHeader = ({user}: Props) => {
         <div className="text-base font-semibold text-text-h">
           {user.username}
         </div>
-        {user.connected && (<div className="text-xs text-green-500">Online</div>)}
+        {user.connected && (<div className="text-xs text-green-500">{t('online')}</div>)}
         {!user.connected && (
           <div>
-            <div className="text-xs text-red-700">Offline</div>
+            <div className="text-xs text-red-700">{t('offline')}</div>
             {user.lastConnection && (<div className="text-xs text-gray-500">{formatTimestamp(user.lastConnection)}</div>)}
           </div>
         )}

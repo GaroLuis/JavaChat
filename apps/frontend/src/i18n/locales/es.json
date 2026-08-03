@@ -1,0 +1,17 @@
+{
+  "chats": "Chats",
+  "searchUsers": "Buscar usuarios...",
+  "searching": "Buscando...",
+  "deleteChat": "Eliminar chat",
+  "online": "En linea",
+  "offline": "Desconectado",
+  "selectConversation": "Selecciona una conversacion para empezar a chatear",
+  "loadingOlderMessages": "Cargando mensajes anteriores...",
+  "scrollUpOlderMessages": "Desplazate hacia arriba para mensajes anteriores",
+  "typeMessage": "Escribe un mensaje...",
+  "send": "Enviar",
+  "signIn": "Iniciar sesion",
+  "signInDescription": "Este chat esta bloqueado. Ingresa tus credenciales para continuar.",
+  "username": "Usuario",
+  "password": "Contrasena"
+}
