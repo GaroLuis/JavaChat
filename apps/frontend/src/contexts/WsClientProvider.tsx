@@ -23,7 +23,7 @@ const WsClientProvider = ({children}: WsClientProviderProps) => {
     }
 
     const stompClient = new Client({
-      brokerURL: "ws://localhost:8080/ws",
+      brokerURL: import.meta.env.VITE_WS_BROKER_URL,
       reconnectDelay: 5000,
       onConnect: () => {
         stompClient.subscribe(`/user/queue/messages`, (msg) => {
