@@ -1,0 +1,53 @@
+package io.github.garoluis.javachat.core.message.presentation;
+
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
+import io.github.garoluis.javachat.config.security.SessionUser;
+import io.github.garoluis.javachat.core.message.application.MessageServiceInterface;
+import io.github.garoluis.javachat.core.message.application.dto.CreateMessageDto;
+import io.github.garoluis.javachat.core.message.domain.Message;
+import io.github.garoluis.javachat.core.message.presentation.mapper.MessageMapper;
+import io.github.garoluis.javachat.core.message.presentation.mapper.MessageResponseDto;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class ChatController {
+    private final MessageServiceInterface messageService;
+
+    private final SimpMessagingTemplate messagingTemplate;
+
+    private final Validator validator;
+
+    public ChatController(
+            MessageServiceInterface messageService,
+            SimpMessagingTemplate messagingTemplate,
+            Validator validator
+    ) {
+        this.messageService = messageService;
+        this.messagingTemplate = messagingTemplate;
+        this.validator = validator;
+    }
+
+    @MessageMapping("/send-message")
+    public void sendMessage(@Payload CreateMessageDto dto, @AuthenticationPrincipal SessionUser principal) {
+        dto.setSenderId(principal.id());
+
+        var validations = validator.validate(dto);
+        if (!validations.isEmpty()) {
+            throw new ConstraintViolationException(validations);
+        }
+
+        Message message = messageService.create(dto);
+        MessageResponseDto messageDto = MessageMapper.toResponseDto(message);
+
+        message.getRoom().getUsers().forEach(user -> messagingTemplate.convertAndSendToUser(
+                user.getUsername(),
+                "/queue/messages",
+                messageDto
+        ));
+    }
+}
