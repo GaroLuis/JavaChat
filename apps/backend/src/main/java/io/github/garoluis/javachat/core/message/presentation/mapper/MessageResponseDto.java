@@ -1,8 +1,8 @@
 package io.github.garoluis.javachat.core.message.presentation.mapper;
 
-import lombok.Data;
-import io.github.garoluis.javachat.core.room.domain.Room;
+import io.github.garoluis.javachat.core.room.presentation.mapper.RoomResponseDto;
 import io.github.garoluis.javachat.core.user.presentation.mapper.UserResponseDto;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,5 +13,5 @@ public class MessageResponseDto {
     private String content;
     private UserResponseDto sender;
     private LocalDateTime timestamp;
-    private Room room;
+    private RoomResponseDto room;
 }

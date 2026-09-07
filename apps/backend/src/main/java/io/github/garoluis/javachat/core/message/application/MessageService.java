@@ -34,6 +34,10 @@ public class MessageService implements MessageServiceInterface{
         User sender = userRepository.getById(dto.getSenderId());
         Room room = roomRepository.getById(dto.getRoomId());
 
+        if (null == room || !room.getUsers().contains(sender)) {
+            throw new NotFoundException("Room not found");
+        }
+
         Message message = new Message(dto.getContent(), sender, room);
 
         return messageRepository.create(message);
@@ -41,9 +45,10 @@ public class MessageService implements MessageServiceInterface{
 
     @Override
     public List<Message> getMessagesByRoom(GetMessagesByRoomDto dto) {
+        User sender = userRepository.getById(dto.getUserId());
         Room room = roomRepository.getById(dto.getRoomId());
 
-        if (null == room) {
+        if (null == room || !room.getUsers().contains(sender)) {
             throw new NotFoundException("Room not found");
         }
 

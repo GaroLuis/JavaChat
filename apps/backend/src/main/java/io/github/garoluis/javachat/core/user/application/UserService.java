@@ -45,6 +45,5 @@ public class UserService implements UserServiceInterface {
         }
 
         userRepository.updateUser(user);
-
     }
 }

@@ -39,12 +39,11 @@ public class RoomService implements RoomServiceInterface {
     @Override
     public void delete(DeleteRoomDto dto) {
         Room room = roomRepository.getById(dto.getRoomId());
+        User user = userRepository.getById(dto.getUserId());
 
-        if (null == room) {
+        if (null == room || !room.getUsers().contains(user)) {
             throw new NotFoundException("Room not found");
         }
-
-        //TODO: Validate that the dto.getUser is in room.getUsers
 
         roomRepository.delete(room);
     }
