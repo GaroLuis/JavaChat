@@ -50,6 +50,7 @@ class MessageServiceTest {
         sender.setId(senderId);
         Room room = new Room();
         room.setId(roomId);
+        room.addUser(sender);
 
         when(userRepository.getById(senderId)).thenReturn(sender);
         when(roomRepository.getById(roomId)).thenReturn(room);

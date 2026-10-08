@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -67,10 +66,15 @@ class RoomServiceTest {
         dto.setRoomId(roomId);
         dto.setUserId(userId);
 
+        User user = new User("roomUser");
+        user.setId(userId);
+
         Room room = new Room();
         room.setId(roomId);
+        room.addUser(user);
 
         when(roomRepository.getById(roomId)).thenReturn(room);
+        when(userRepository.getById(userId)).thenReturn(user);
 
         roomService.delete(dto);
 
