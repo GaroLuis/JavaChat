@@ -10,8 +10,13 @@
   "scrollUpOlderMessages": "Desplazate hacia arriba para mensajes anteriores",
   "typeMessage": "Escribe un mensaje...",
   "send": "Enviar",
-  "signIn": "Iniciar sesion",
+  "signIn": "Iniciar sesión",
   "signInDescription": "Este chat esta bloqueado. Ingresa tus credenciales para continuar.",
+  "signUp": "Registrarse",
+  "signUpDescription": "Crea tu cuenta para empezar a chatear.",
+  "signUpError": "No se pudo crear la cuenta. El usuario puede que ya este en uso.",
+  "noAccount": "No tienes una cuenta?",
+  "close": "Cerrar",
   "username": "Usuario",
   "password": "Contrasena"
 }

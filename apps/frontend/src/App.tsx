@@ -1,5 +1,5 @@
 import {useContext} from 'react'
-import AuthModal from './components/auth/modals/AuthModal.tsx'
+import AuthSection from './components/auth/AuthSection.tsx'
 import {useGetMe} from "./hooks/useGetMe.ts";
 import LoadingBar from "./components/generic/LoadingBar.tsx";
 import {WsClientContext} from "./contexts/WsClientProvider.tsx";
@@ -27,7 +27,7 @@ const Content = () => {
 
   if (null == me || !client?.active) {
     return (
-      <AuthModal/>
+      <AuthSection/>
     )
   }
 

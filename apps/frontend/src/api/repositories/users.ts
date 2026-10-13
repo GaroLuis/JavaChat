@@ -8,3 +8,7 @@ export function getUsers(search: string) {
 export function getMe() {
   return connector.get<User>('/users/me')
 }
+
+export function createUser(data: { username: string; password: string }) {
+  return connector.post<User>('/users', data)
+}

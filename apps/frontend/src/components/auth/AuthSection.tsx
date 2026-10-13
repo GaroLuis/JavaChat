@@ -1,10 +1,13 @@
+import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {useMutation} from "@tanstack/react-query";
-import {login} from "../../../api/repositories/auth.ts";
+import {login} from "../../api/repositories/auth.ts";
 import {useTranslation} from "react-i18next";
+import SignUpModal from "./modals/SignUpModal.tsx";
 
-const AuthModal = () => {
+const AuthSection = () => {
   const { t } = useTranslation()
+  const [showSignUp, setshowSignUp] = useState(false);
 
   const {
     register,
@@ -54,9 +57,20 @@ const AuthModal = () => {
         >
           {t('signIn')}
         </button>
+        <p className="text-sm text-text text-center mt-5">
+          {t('noAccount')}{' '}
+          <button
+            type="button"
+            onClick={() => setshowSignUp(true)}
+            className="border-none bg-transparent p-0 text-accent text-sm font-semibold cursor-pointer hover:underline"
+          >
+            {t('signUp')}
+          </button>
+        </p>
       </form>
+      {showSignUp && <SignUpModal onClose={() => setshowSignUp(false)}/>}
     </div>
   )
 }
 
-export default AuthModal
+export default AuthSection

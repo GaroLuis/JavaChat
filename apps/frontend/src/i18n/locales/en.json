@@ -12,6 +12,11 @@
   "send": "Send",
   "signIn": "Sign in",
   "signInDescription": "This chat is locked. Enter your credentials to continue.",
+  "signUp": "Sign up",
+  "signUpDescription": "Create your account to start chatting.",
+  "signUpError": "Could not create the account. The username may already be taken.",
+  "noAccount": "Don't have an account?",
+  "close": "Close",
   "username": "Username",
   "password": "Password"
 }
