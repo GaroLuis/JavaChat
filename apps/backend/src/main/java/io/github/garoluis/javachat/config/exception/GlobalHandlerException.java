@@ -1,5 +1,6 @@
 package io.github.garoluis.javachat.config.exception;
 
+import io.github.garoluis.javachat.core.common.domain.exception.ConflictException;
 import io.github.garoluis.javachat.core.common.domain.exception.InvalidCredentialsException;
 import io.github.garoluis.javachat.core.common.domain.exception.NotAuthorisedException;
 import io.github.garoluis.javachat.core.common.domain.exception.NotFoundException;
@@ -15,6 +16,12 @@ public class GlobalHandlerException {
     public ResponseEntity<String> handleResourceNotFoundException(NotFoundException exception)
     {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<String> handleConflictException(ConflictException exception)
+    {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 
     @ExceptionHandler(NotAuthorisedException.class)

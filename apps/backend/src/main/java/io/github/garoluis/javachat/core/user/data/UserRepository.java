@@ -83,6 +83,22 @@ public class UserRepository implements UserRepositoryInterface {
 
     @Transactional
     @Override
+    public User create(User user) {
+        UserEntity entity = new UserEntity();
+
+        entity.setId(user.getId());
+        entity.setUsername(user.getUsername());
+        entity.setPassword(user.getPassword());
+        entity.setConnected(Boolean.TRUE.equals(user.getConnected()));
+
+        entityManager.persist(entity);
+        entityManager.flush();
+
+        return user;
+    }
+
+    @Transactional
+    @Override
     public void updateUser(User user) {
         UserEntity entity = entityManager.find(UserEntity.class, user.getId());
 
@@ -90,6 +106,8 @@ public class UserRepository implements UserRepositoryInterface {
             return;
         }
 
+        entity.setUsername(user.getUsername());
+        entity.setPassword(user.getPassword());
         entity.setConnected(user.getConnected());
         entity.setLastConnection(user.getLastConnection());
 

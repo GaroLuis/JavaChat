@@ -14,5 +14,7 @@ public interface UserRepositoryInterface {
 
     public @Nullable User getByUserName(String username);
 
+    public User create(User user);
+
     public void updateUser(User user);
 }
