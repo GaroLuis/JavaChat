@@ -18,5 +18,11 @@
   "noAccount": "Don't have an account?",
   "close": "Close",
   "username": "Username",
-  "password": "Password"
+  "password": "Password",
+  "settings": "Settings",
+  "editUser": "Edit user",
+  "editUserDescription": "Update your username or password.",
+  "editUserError": "Could not update the user. The username may already be taken.",
+  "newPassword": "New password (leave empty to keep current)",
+  "save": "Save"
 }

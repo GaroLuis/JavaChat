@@ -12,3 +12,7 @@ export function getMe() {
 export function createUser(data: { username: string; password: string }) {
   return connector.post<User>('/users', data)
 }
+
+export function updateMe(data: { username?: string; password?: string }) {
+  return connector.put<User>('/users/me', data)
+}

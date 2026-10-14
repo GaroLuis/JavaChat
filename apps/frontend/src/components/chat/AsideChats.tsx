@@ -7,6 +7,8 @@ import {getUsers} from "../../api/repositories/users.ts";
 import {useGetRooms} from "../../hooks/useGetRooms.ts";
 import RoomItem from "./RoomItem.tsx";
 import {useTranslation} from "react-i18next";
+import {useState} from "react";
+import EditUserModal from "./modals/EditUserModal.tsx";
 
 interface UserOption {
   value: string;
@@ -16,6 +18,8 @@ interface UserOption {
 const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [showEditUserModal, setShowEditUserModal] = useState(false)
 
   const createRoomMutation = useMutation({
     mutationFn: (userId: string) => createRoom([userId]),
@@ -68,6 +72,44 @@ const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
           )
         )}
       </nav>
+      <div className="p-3 border-t border-border">
+        <div className="relative">
+          <button
+            onClick={() => setIsMenuOpen((open) => !open)}
+            aria-label={t('settings')}
+            aria-haspopup="menu"
+            aria-expanded={isMenuOpen}
+            className="size-8 flex items-center justify-center rounded hover:bg-code-bg text-text hover:text-text-h transition-colors duration-150 cursor-pointer border-none bg-transparent"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+          {isMenuOpen && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setIsMenuOpen(false)}/>
+              <div
+                role="menu"
+                className="absolute bottom-full left-0 z-20 mb-1 min-w-44 rounded-lg border border-border bg-surface shadow-2xl py-1"
+              >
+                <button
+                  role="menuitem"
+                  onClick={() => {
+                    setIsMenuOpen(false)
+                    setShowEditUserModal(true)
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-text hover:bg-code-bg hover:text-text-h transition-colors duration-150 border-none bg-transparent cursor-pointer"
+                >
+                  {t('editUser')}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+      {showEditUserModal && <EditUserModal me={me} onClose={() => setShowEditUserModal(false)}/>}
     </aside>
   )
 }
