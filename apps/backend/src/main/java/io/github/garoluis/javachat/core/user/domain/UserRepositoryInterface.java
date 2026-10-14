@@ -17,4 +17,12 @@ public interface UserRepositoryInterface {
     public User create(User user);
 
     public void updateUser(User user);
+
+    public boolean areContacts(UUID userId, UUID contactId);
+
+    public List<User> getContacts(UUID userId);
+
+    public void addContact(UUID userId, UUID contactId);
+
+    public void removeContact(UUID userId, UUID contactId);
 }

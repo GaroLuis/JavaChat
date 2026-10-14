@@ -5,14 +5,18 @@ import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import io.github.garoluis.javachat.config.security.SessionUser;
 import io.github.garoluis.javachat.core.user.application.UserServiceInterface;
+import io.github.garoluis.javachat.core.user.application.dto.AddContactDto;
 import io.github.garoluis.javachat.core.user.application.dto.CreateUserDto;
+import io.github.garoluis.javachat.core.user.application.dto.DeleteContactDto;
 import io.github.garoluis.javachat.core.user.application.dto.GetUsersDto;
 import io.github.garoluis.javachat.core.user.application.dto.UpdateUserDto;
 import io.github.garoluis.javachat.core.user.presentation.mapper.UserResponseDto;
 import io.github.garoluis.javachat.core.user.presentation.mapper.UserMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -70,5 +75,29 @@ public class UserController {
         dto.setUserId(principal.id());
 
         return UserMapper.toResponseDto(userService.update(dto));
+    }
+
+    @GetMapping("/contacts")
+    public List<UserResponseDto> getContacts(@AuthenticationPrincipal SessionUser principal) {
+        return userService.getContacts(principal.id()).stream()
+                .map(UserMapper::toResponseDto)
+                .toList();
+    }
+
+    @PostMapping("/contacts")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addContact(@Valid @RequestBody AddContactDto dto, @AuthenticationPrincipal SessionUser principal) {
+        dto.setUserId(principal.id());
+
+        userService.addContact(dto);
+    }
+
+    @DeleteMapping("/contacts/{contactId}")
+    public void removeContact(@PathVariable UUID contactId, @AuthenticationPrincipal SessionUser principal) {
+        DeleteContactDto dto = new DeleteContactDto();
+        dto.setUserId(principal.id());
+        dto.setContactId(contactId);
+
+        userService.removeContact(dto);
     }
 }

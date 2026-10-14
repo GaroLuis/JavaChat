@@ -4,8 +4,11 @@ import jakarta.validation.Validator;
 import io.github.garoluis.javachat.config.exception.GlobalHandlerException;
 import io.github.garoluis.javachat.config.security.SessionUser;
 import io.github.garoluis.javachat.core.common.domain.exception.ConflictException;
+import io.github.garoluis.javachat.core.common.domain.exception.NotFoundException;
 import io.github.garoluis.javachat.core.user.application.UserServiceInterface;
+import io.github.garoluis.javachat.core.user.application.dto.AddContactDto;
 import io.github.garoluis.javachat.core.user.application.dto.CreateUserDto;
+import io.github.garoluis.javachat.core.user.application.dto.DeleteContactDto;
 import io.github.garoluis.javachat.core.user.application.dto.GetUsersDto;
 import io.github.garoluis.javachat.core.user.application.dto.UpdateUserDto;
 import io.github.garoluis.javachat.core.user.domain.User;
@@ -31,9 +34,11 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -173,5 +178,86 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
 
         verify(userService, never()).update(any());
+    }
+
+    @Test
+    void getContacts_ShouldReturnContacts() throws Exception {
+        User contact = new User("bob");
+        when(userService.getContacts(userId)).thenReturn(List.of(contact));
+
+        mockMvc.perform(get("/users/contacts"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].username").value("bob"))
+                .andExpect(jsonPath("$[0].id").value(contact.getId().toString()));
+    }
+
+    @Test
+    void addContact_WithValidBody_ShouldReturnCreated() throws Exception {
+        UUID contactId = UUID.randomUUID();
+
+        String json = """
+                {"contactId":"%s"}
+                """.formatted(contactId);
+
+        mockMvc.perform(post("/users/contacts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isCreated());
+
+        ArgumentCaptor<AddContactDto> captor = ArgumentCaptor.forClass(AddContactDto.class);
+        verify(userService).addContact(captor.capture());
+
+        assertEquals(userId, captor.getValue().getUserId());
+        assertEquals(contactId, captor.getValue().getContactId());
+    }
+
+    @Test
+    void addContact_WithMissingContactId_ShouldReturnBadRequest() throws Exception {
+        mockMvc.perform(post("/users/contacts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+
+        verify(userService, never()).addContact(any());
+    }
+
+    @Test
+    void addContact_WhenAlreadyContact_ShouldReturnConflict() throws Exception {
+        doThrow(new ConflictException("Contact already added")).when(userService).addContact(any(AddContactDto.class));
+
+        UUID contactId = UUID.randomUUID();
+
+        String json = """
+                {"contactId":"%s"}
+                """.formatted(contactId);
+
+        mockMvc.perform(post("/users/contacts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void removeContact_ShouldReturnOk() throws Exception {
+        UUID contactId = UUID.randomUUID();
+
+        mockMvc.perform(delete("/users/contacts/{contactId}", contactId))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<DeleteContactDto> captor = ArgumentCaptor.forClass(DeleteContactDto.class);
+        verify(userService).removeContact(captor.capture());
+
+        assertEquals(userId, captor.getValue().getUserId());
+        assertEquals(contactId, captor.getValue().getContactId());
+    }
+
+    @Test
+    void removeContact_WhenNotAContact_ShouldReturnNotFound() throws Exception {
+        doThrow(new NotFoundException("Contact not found")).when(userService).removeContact(any(DeleteContactDto.class));
+
+        UUID contactId = UUID.randomUUID();
+
+        mockMvc.perform(delete("/users/contacts/{contactId}", contactId))
+                .andExpect(status().isNotFound());
     }
 }

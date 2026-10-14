@@ -3,7 +3,9 @@ package io.github.garoluis.javachat.user.application;
 import io.github.garoluis.javachat.core.common.domain.exception.ConflictException;
 import io.github.garoluis.javachat.core.common.domain.exception.NotFoundException;
 import io.github.garoluis.javachat.core.user.application.UserService;
+import io.github.garoluis.javachat.core.user.application.dto.AddContactDto;
 import io.github.garoluis.javachat.core.user.application.dto.CreateUserDto;
+import io.github.garoluis.javachat.core.user.application.dto.DeleteContactDto;
 import io.github.garoluis.javachat.core.user.application.dto.GetUsersDto;
 import io.github.garoluis.javachat.core.user.application.dto.UpdateUserDto;
 import io.github.garoluis.javachat.core.user.domain.User;
@@ -168,5 +170,116 @@ class UserServiceTest {
         assertThrows(NotFoundException.class, () -> userService.update(dto));
 
         verify(userRepository, never()).updateUser(any());
+    }
+
+    @Test
+    void getContacts_ShouldReturnContacts() {
+        UUID userId = UUID.randomUUID();
+        List<User> contacts = List.of(new User("bob"), new User("carol"));
+
+        when(userRepository.getContacts(userId)).thenReturn(contacts);
+
+        assertEquals(contacts, userService.getContacts(userId));
+
+        verify(userRepository).getContacts(userId);
+    }
+
+    @Test
+    void addContact_ShouldAddContact() {
+        UUID userId = UUID.randomUUID();
+        UUID contactId = UUID.randomUUID();
+
+        AddContactDto dto = new AddContactDto();
+        dto.setUserId(userId);
+        dto.setContactId(contactId);
+
+        when(userRepository.getById(userId)).thenReturn(new User("alice"));
+        when(userRepository.getById(contactId)).thenReturn(new User("bob"));
+        when(userRepository.areContacts(userId, contactId)).thenReturn(false);
+
+        userService.addContact(dto);
+
+        verify(userRepository).addContact(userId, contactId);
+    }
+
+    @Test
+    void addContact_WhenAddingSelf_ShouldThrowConflict() {
+        UUID userId = UUID.randomUUID();
+
+        AddContactDto dto = new AddContactDto();
+        dto.setUserId(userId);
+        dto.setContactId(userId);
+
+        assertThrows(ConflictException.class, () -> userService.addContact(dto));
+
+        verify(userRepository, never()).addContact(any(), any());
+    }
+
+    @Test
+    void addContact_WhenUserOrContactDoesNotExist_ShouldThrowNotFound() {
+        UUID userId = UUID.randomUUID();
+        UUID contactId = UUID.randomUUID();
+
+        AddContactDto dto = new AddContactDto();
+        dto.setUserId(userId);
+        dto.setContactId(contactId);
+
+        when(userRepository.getById(userId)).thenReturn(null);
+
+        assertThrows(NotFoundException.class, () -> userService.addContact(dto));
+
+        verify(userRepository, never()).addContact(any(), any());
+    }
+
+    @Test
+    void addContact_WhenAlreadyContact_ShouldThrowConflict() {
+        UUID userId = UUID.randomUUID();
+        UUID contactId = UUID.randomUUID();
+
+        AddContactDto dto = new AddContactDto();
+        dto.setUserId(userId);
+        dto.setContactId(contactId);
+
+        when(userRepository.getById(userId)).thenReturn(new User("alice"));
+        when(userRepository.getById(contactId)).thenReturn(new User("bob"));
+        when(userRepository.areContacts(userId, contactId)).thenReturn(true);
+
+        assertThrows(ConflictException.class, () -> userService.addContact(dto));
+
+        verify(userRepository, never()).addContact(any(), any());
+    }
+
+    @Test
+    void removeContact_ShouldRemoveContact() {
+        UUID userId = UUID.randomUUID();
+        UUID contactId = UUID.randomUUID();
+
+        DeleteContactDto dto = new DeleteContactDto();
+        dto.setUserId(userId);
+        dto.setContactId(contactId);
+
+        when(userRepository.getById(userId)).thenReturn(new User("alice"));
+        when(userRepository.areContacts(userId, contactId)).thenReturn(true);
+
+        userService.removeContact(dto);
+
+        verify(userRepository).removeContact(userId, contactId);
+    }
+
+    @Test
+    void removeContact_WhenNotAContact_ShouldThrowNotFound() {
+        UUID userId = UUID.randomUUID();
+        UUID contactId = UUID.randomUUID();
+
+        DeleteContactDto dto = new DeleteContactDto();
+        dto.setUserId(userId);
+        dto.setContactId(contactId);
+
+        when(userRepository.getById(userId)).thenReturn(new User("alice"));
+        when(userRepository.areContacts(userId, contactId)).thenReturn(false);
+
+        assertThrows(NotFoundException.class, () -> userService.removeContact(dto));
+
+        verify(userRepository, never()).removeContact(any(), any());
     }
 }

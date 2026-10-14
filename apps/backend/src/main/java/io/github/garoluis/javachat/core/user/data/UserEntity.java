@@ -3,6 +3,9 @@ package io.github.garoluis.javachat.core.user.data;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +14,8 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -36,6 +41,15 @@ public class UserEntity {
     @Getter
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Getter
+    @ManyToMany
+    @JoinTable( name = "user_contacts", schema = "chat", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "contact_id") )
+    private List<UserEntity> contacts;
+
+    public UserEntity() {
+        this.contacts = new ArrayList<>();
+    }
 
     public @NonNull String getUsername() {
         return username;

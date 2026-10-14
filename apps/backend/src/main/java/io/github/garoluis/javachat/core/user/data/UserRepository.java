@@ -113,4 +113,69 @@ public class UserRepository implements UserRepositoryInterface {
 
         entityManager.flush();
     }
+
+    @Override
+    public boolean areContacts(UUID userId, UUID contactId) {
+        var query = entityManager.createQuery(
+                """
+                            SELECT COUNT(u)
+                            FROM UserEntity u
+                            JOIN u.contacts c
+                            WHERE u.id = :userId AND c.id = :contactId
+                        """,
+                Long.class
+        );
+
+        query.setParameter("userId", userId);
+        query.setParameter("contactId", contactId);
+
+        return query.getSingleResult() > 0;
+    }
+
+    @Override
+    public List<User> getContacts(UUID userId) {
+        var query = entityManager.createQuery(
+                """
+                            SELECT c
+                            FROM UserEntity u
+                            JOIN u.contacts c
+                            WHERE u.id = :userId
+                        """,
+                UserEntity.class
+        );
+
+        query.setParameter("userId", userId);
+
+        return query.getResultStream().map(UserEntity::toDomain).collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public void addContact(UUID userId, UUID contactId) {
+        UserEntity user = entityManager.find(UserEntity.class, userId);
+        UserEntity contact = entityManager.find(UserEntity.class, contactId);
+
+        if (null == user || null == contact) {
+            return;
+        }
+
+        user.getContacts().add(contact);
+
+        entityManager.flush();
+    }
+
+    @Transactional
+    @Override
+    public void removeContact(UUID userId, UUID contactId) {
+        UserEntity user = entityManager.find(UserEntity.class, userId);
+        UserEntity contact = entityManager.find(UserEntity.class, contactId);
+
+        if (null == user || null == contact) {
+            return;
+        }
+
+        user.getContacts().remove(contact);
+
+        entityManager.flush();
+    }
 }

@@ -1,6 +1,8 @@
 package io.github.garoluis.javachat.core.user.application;
 
+import io.github.garoluis.javachat.core.user.application.dto.AddContactDto;
 import io.github.garoluis.javachat.core.user.application.dto.CreateUserDto;
+import io.github.garoluis.javachat.core.user.application.dto.DeleteContactDto;
 import io.github.garoluis.javachat.core.user.application.dto.GetUsersDto;
 import io.github.garoluis.javachat.core.user.application.dto.UpdateUserConnectionStatusDto;
 import io.github.garoluis.javachat.core.user.application.dto.UpdateUserDto;
@@ -19,4 +21,10 @@ public interface UserServiceInterface {
     public User update(UpdateUserDto dto);
 
     public void updateUserConnectionStatus(UpdateUserConnectionStatusDto dto);
+
+    public List<User> getContacts(UUID userId);
+
+    public void addContact(AddContactDto dto);
+
+    public void removeContact(DeleteContactDto dto);
 }

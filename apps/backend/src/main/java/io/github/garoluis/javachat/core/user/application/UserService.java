@@ -2,7 +2,9 @@ package io.github.garoluis.javachat.core.user.application;
 
 import io.github.garoluis.javachat.core.common.domain.exception.ConflictException;
 import io.github.garoluis.javachat.core.common.domain.exception.NotFoundException;
+import io.github.garoluis.javachat.core.user.application.dto.AddContactDto;
 import io.github.garoluis.javachat.core.user.application.dto.CreateUserDto;
+import io.github.garoluis.javachat.core.user.application.dto.DeleteContactDto;
 import io.github.garoluis.javachat.core.user.application.dto.GetUsersDto;
 import io.github.garoluis.javachat.core.user.application.dto.UpdateUserConnectionStatusDto;
 import io.github.garoluis.javachat.core.user.application.dto.UpdateUserDto;
@@ -73,6 +75,42 @@ public class UserService implements UserServiceInterface {
         userRepository.updateUser(user);
 
         return user;
+    }
+
+    @Override
+    public List<User> getContacts(UUID userId) {
+        return userRepository.getContacts(userId);
+    }
+
+    @Override
+    public void addContact(AddContactDto dto) {
+        if (dto.getUserId().equals(dto.getContactId())) {
+            throw new ConflictException("Cannot add yourself as a contact");
+        }
+
+        User user = userRepository.getById(dto.getUserId());
+        User contact = userRepository.getById(dto.getContactId());
+
+        if (null == user || null == contact) {
+            throw new NotFoundException("User not found");
+        }
+
+        if (userRepository.areContacts(dto.getUserId(), dto.getContactId())) {
+            throw new ConflictException("Contact already added");
+        }
+
+        userRepository.addContact(dto.getUserId(), dto.getContactId());
+    }
+
+    @Override
+    public void removeContact(DeleteContactDto dto) {
+        User user = userRepository.getById(dto.getUserId());
+
+        if (null == user || !userRepository.areContacts(dto.getUserId(), dto.getContactId())) {
+            throw new NotFoundException("Contact not found");
+        }
+
+        userRepository.removeContact(dto.getUserId(), dto.getContactId());
     }
 
     @Override
