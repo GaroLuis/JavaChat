@@ -24,5 +24,8 @@
   "editUserDescription": "Update your username or password.",
   "editUserError": "Could not update the user. The username may already be taken.",
   "newPassword": "New password (leave empty to keep current)",
-  "save": "Save"
+  "save": "Save",
+  "contacts": "Contacts",
+  "searchContacts": "Search contacts...",
+  "removeContact": "Remove contact"
 }

@@ -3,12 +3,14 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import AsyncSelect from "react-select/async";
 import {createRoom} from "../../api/repositories/rooms.ts";
 import {QUERY_KEYS} from "../../api/queryKeys.ts";
-import {getUsers} from "../../api/repositories/users.ts";
+import {getContacts} from "../../api/repositories/users.ts";
 import {useGetRooms} from "../../hooks/useGetRooms.ts";
 import RoomItem from "./RoomItem.tsx";
 import {useTranslation} from "react-i18next";
-import {useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import EditUserModal from "./modals/EditUserModal.tsx";
+import ContactsModal from "./modals/ContactsModal.tsx";
+import debounce from "lodash/debounce";
 
 interface UserOption {
   value: string;
@@ -20,6 +22,7 @@ const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
   const { t } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [showEditUserModal, setShowEditUserModal] = useState(false)
+  const [showContactsModal, setShowContactsModal] = useState(false)
 
   const createRoomMutation = useMutation({
     mutationFn: (userId: string) => createRoom([userId]),
@@ -30,6 +33,35 @@ const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
 
   const roomsQuery = useGetRooms()
   const rooms = roomsQuery.data?.data ?? [];
+
+  const loadContacts = useMemo(() => {
+    let latestRequest = 0
+
+    return debounce((inputValue: string, callback: (options: UserOption[]) => void) => {
+      const requestId = ++latestRequest
+
+      getContacts()
+        .then(({data}) => {
+          if (requestId !== latestRequest) {
+            return
+          }
+
+          const query = inputValue.toLowerCase()
+          callback(
+            data
+              .filter((u: User) => u.username.toLowerCase().includes(query))
+              .map((u: User) => ({value: u.id, label: u.username}))
+          )
+        })
+        .catch(() => {
+          if (requestId === latestRequest) {
+            callback([])
+          }
+        })
+    }, 300)
+  }, [])
+
+  useEffect(() => () => loadContacts.cancel(), [loadContacts])
 
   return (
     <aside className="w-80 border-r border-border flex flex-col bg-bg shrink-0">
@@ -45,14 +77,7 @@ const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
         <AsyncSelect
           cacheOptions
           defaultOptions={false}
-          loadOptions={async (inputValue: string): Promise<UserOption[]> => {
-            if (inputValue.length < 1) {
-              return []
-            }
-
-            const {data} = await getUsers(inputValue)
-            return data.map((u: User) => ({value: u.id, label: u.username}))
-          }}
+          loadOptions={loadContacts}
           onChange={async (option: UserOption | null) => {
             if (!option) {
               return
@@ -60,7 +85,7 @@ const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
 
             await createRoomMutation.mutateAsync(option.value)
           }}
-          placeholder={t('searchUsers')}
+          placeholder={t('searchContacts')}
           noOptionsMessage={() => null}
           loadingMessage={() => t('searching')}
           value={null}
@@ -104,12 +129,23 @@ const AsideChats = ({selectedRoomId, setSelectedRoomId, me}: Props) => {
                 >
                   {t('editUser')}
                 </button>
+                <button
+                  role="menuitem"
+                  onClick={() => {
+                    setIsMenuOpen(false)
+                    setShowContactsModal(true)
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-text hover:bg-code-bg hover:text-text-h transition-colors duration-150 border-none bg-transparent cursor-pointer"
+                >
+                  {t('contacts')}
+                </button>
               </div>
             </>
           )}
         </div>
       </div>
       {showEditUserModal && <EditUserModal me={me} onClose={() => setShowEditUserModal(false)}/>}
+      {showContactsModal && <ContactsModal onClose={() => setShowContactsModal(false)}/>}
     </aside>
   )
 }

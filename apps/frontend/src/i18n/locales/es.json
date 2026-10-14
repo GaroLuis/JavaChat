@@ -24,5 +24,8 @@
   "editUserDescription": "Actualiza tu nombre de usuario o contraseña.",
   "editUserError": "No se pudo actualizar el usuario. El usuario puede que ya este en uso.",
   "newPassword": "Nueva contraseña (deja vacio para mantener la actual)",
-  "save": "Guardar"
+  "save": "Guardar",
+  "contacts": "Contactos",
+  "searchContacts": "Buscar contactos...",
+  "removeContact": "Eliminar contacto"
 }

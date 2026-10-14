@@ -16,3 +16,15 @@ export function createUser(data: { username: string; password: string }) {
 export function updateMe(data: { username?: string; password?: string }) {
   return connector.put<User>('/users/me', data)
 }
+
+export function getContacts() {
+  return connector.get<User[]>('/users/contacts')
+}
+
+export function addContact(contactId: string) {
+  return connector.post('/users/contacts', {contactId})
+}
+
+export function removeContact(contactId: string) {
+  return connector.delete(`/users/contacts/${contactId}`)
+}
